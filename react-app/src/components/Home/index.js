@@ -27,7 +27,7 @@ export default function Home() {
     return (
       <NavLink key={deck.id} exact to={`decks/${deck.id}`}>
         <div>
-          <p>{deck.name}</p>
+          <img src={deck.coverImageUrl} alt={`Cover for ${deck.name}`} />
         </div>
       </NavLink>
     );

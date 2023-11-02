@@ -8,7 +8,6 @@ def seed_cards():
         color_identity="W",
         type="Legendary Creature — Angel",
         image_url="https://lotusfieldbucket.s3.us-west-2.amazonaws.com/giada-font-of-hope.jpg",
-        is_commander=True
     )
 
     card_2 = Card(
@@ -30,7 +29,6 @@ def seed_cards():
         color_identity="BR",
         type="Legendary Creature — Tiefling Warlock",
         image_url="https://lotusfieldbucket.s3.us-west-2.amazonaws.com/prosper-tome-bound.jpg",
-        is_commander=True
     )
 
     card_5 = Card(
@@ -52,7 +50,6 @@ def seed_cards():
         color_identity="GW",
         type="Legendary Enchantment Creature — Nymph",
         image_url="https://lotusfieldbucket.s3.us-west-2.amazonaws.com/sythis-harvest-s-hand.jpg",
-        is_commander=True
     )
 
     card_8 = Card(
