@@ -11,7 +11,9 @@ class Deck(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(100))
     description = db.Column (db.Text)
+    cover_image_url = db.Column(db.String(255))
     user_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod('users.id')))
+    commander_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod('cards.id')))
 
     decks_of_user = db.relationship('User',back_populates='users_decks')
     comments_about_deck = db.relationship('Comment', back_populates = 'deck_with_comment')
@@ -22,7 +24,9 @@ class Deck(db.Model):
             "id": self.id,
             "name": self.name,
             "description": self.description,
+            "coverImageUrl": self.cover_image_url,
             "userId": self.user_id,
+            "commanderId": self.commander_id,
             "cardsInDeck": [card.id for card in self.cards_in_deck],
             "commentsAboutDeck": [comment.id for comment in self.comments_about_deck]
         }

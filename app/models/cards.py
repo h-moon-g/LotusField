@@ -12,8 +12,7 @@ class Card(db.Model):
     name = db.Column(db.String(100))
     color_identity = db.Column(db.String(100))
     type = db.Column(db.String(100))
-    image_url = db.Column(db.String(100))
-    is_commander = db.Column(db.Boolean, default=False)
+    image_url = db.Column(db.String(255))
 
     decks_with_card = db.relationship('Deck', secondary=deck_cards, back_populates='cards_in_deck')
 
@@ -24,6 +23,5 @@ class Card(db.Model):
             "colorIdentity": self.color_identity,
             "type": self.type,
             "imageUrl": self.image_url,
-            "isCommander": self.is_commander,
             "decksWithCard": [deck.id for deck in self.decks_with_card]
         }
