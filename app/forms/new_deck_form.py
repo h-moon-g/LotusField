@@ -12,12 +12,14 @@ def commander_valid(form, field):
     if not local_commander:
         api_card = requests.get(f'https://api.scryfall.com/cards/named?exact={commander_name}')
         api_card = api_card.json()
-        if api_card:
+        if "type_line" in api_card:
             if api_card['type_line'][0:18] != "Legendary Creature":
-                raise ValidationError('Not a valid commander!')
+                raise ValidationError('Commanders must be legendary creatures!')
+        else:
+            raise ValidationError("Invalid card name!")
     if local_commander:
         if local_commander.type.slice(0, 19) != "Legendary Creature":
-            raise ValidationError('Not a valid commander!')
+            raise ValidationError('Commanders must be legendary creatures!')
 
 class CreateDeckForm(FlaskForm):
     name = StringField("Name", validators=[DataRequired(), Length(1,100)])
