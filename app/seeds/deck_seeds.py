@@ -5,20 +5,26 @@ from sqlalchemy.sql import text
 def seed_decks():
     deck_1 = Deck(
         user_id=1,
+        commander_id=1,
         name="Giada, Angel Tribal",
-        description="I <3 mono white"
+        description="I <3 mono white",
+        cover_image_url="https://lotusfieldbucket.s3.us-west-2.amazonaws.com/giada-font-of-hope-art.jpg"
     )
 
     deck_2 = Deck(
         user_id=2,
+        commander_id=4,
         name="Live and Prosper",
-        description="So much treasure..."
+        description="So much treasure...",
+        cover_image_url="https://lotusfieldbucket.s3.us-west-2.amazonaws.com/prosper-tome-bound-art.jpg"
     )
 
     deck_3 = Deck(
         user_id=3,
+        commander_id=7,
         name="Sythis, Enchantment Tribal",
-        description="Oops, all enchantments!"
+        description="Oops, all enchantments!",
+        cover_image_url="https://lotusfieldbucket.s3.us-west-2.amazonaws.com/sythis-harvest-s-hand-art.jpg"
     )
 
 
