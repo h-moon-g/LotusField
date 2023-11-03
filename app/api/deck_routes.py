@@ -25,10 +25,11 @@ def create_new_deck():
         api_card = requests.get(f'https://api.scryfall.com/cards/named?exact={form.data["commander"]}')
         api_card = api_card.json()
 
-        deck_image = form.data['card_image_url']
+        deck_image = form.data['cover_image_url']
         deck_image.filename = get_unique_filename(deck_image.filename)
 
         deck_upload = upload_file_to_s3(deck_image)
+        print(deck_upload)
         if "url" not in deck_upload:
             return { 'errors': {'message': 'Oops! something went wrong on our end '}}, 500
         deck_url = deck_upload['url']
