@@ -13,8 +13,6 @@ export default function CreateDeck() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [commander, setCommander] = useState("");
-  const [coverImageUrl, setCoverImageUrl] = useState("");
-  const [cardImageUrl, setCardImageUrl] = useState("");
   const [errors, setErrors] = useState({});
 
   const handleSubmit = async (e) => {
@@ -26,12 +24,32 @@ export default function CreateDeck() {
 
     let apiCard = await apiFetch.json();
 
+    let formData = new FormData();
+
     if (
       apiCard?.type_line &&
       apiCard?.type_line.slice(0, 18) === "Legendary Creature"
     ) {
-      setCoverImageUrl(apiCard.image_uris.art_crop);
-      setCardImageUrl(apiCard.image_uris.border_crop);
+      const coverImage = apiCard.image_uris.art_crop;
+      const borderImage = apiCard.image_uris.border_crop;
+      let coverFile = null;
+      let borderFile = null;
+      await fetch(`${coverImage}`)
+        .then((res) => res.blob())
+        .then((myBlob) => {
+          coverFile = new File([myBlob], "cover_image.jpeg", {
+            type: myBlob.type,
+          });
+        });
+      await fetch(`${borderImage}`)
+        .then((res) => res.blob())
+        .then((myBlob) => {
+          borderFile = new File([myBlob], "border_image.jpeg", {
+            type: myBlob.type,
+          });
+        });
+      formData.append("cover_image_url", coverFile);
+      formData.append("card_image_url", borderFile);
     } else if (
       apiCard?.type_line &&
       !(apiCard?.type_line.slice(0, 18) === "Legendary Creature")
@@ -43,33 +61,9 @@ export default function CreateDeck() {
       return null;
     }
 
-    // .then((data) => {
-    //   return data.json();
-    // })
-    // .then((data) => {
-    //   if (
-    //     data?.type_line &&
-    //     data?.type_line.slice(0, 18) === "Legendary Creature"
-    //   ) {
-    //     setCoverImageUrl(data.image_uris.art_crop);
-    //     setCardImageUrl(data.image_uris.border_crop);
-    //   } else if (
-    //     data?.type_line &&
-    //     !(data?.type_line.slice(0, 18) === "Legendary Creature")
-    //   ) {
-    //     setErrors({ commander: "Commanders must be legendary creatures!" });
-    //   } else {
-    //     setErrors({ commander: "Invalid cardname!" });
-    //   }
-    // });
-
-    let formData = new FormData();
-
     formData.append("name", name);
     formData.append("description", description);
     formData.append("commander", commander);
-    formData.append("cover_image_url", coverImageUrl);
-    formData.append("card_image_url", cardImageUrl);
 
     let data = await dispatch(ThunkCreateDeck(formData));
 

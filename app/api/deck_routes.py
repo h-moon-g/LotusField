@@ -26,7 +26,6 @@ def create_new_deck():
         api_card = api_card.json()
 
         deck_image = form.data['card_image_url']
-        ic(deck_image)
         deck_image.filename = get_unique_filename(deck_image.filename)
 
         deck_upload = upload_file_to_s3(deck_image)
