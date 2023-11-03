@@ -13,15 +13,63 @@ export default function CreateDeck() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [commander, setCommander] = useState("");
+  const [coverImageUrl, setCoverImageUrl] = useState("");
+  const [cardImageUrl, setCardImageUrl] = useState("");
   const [errors, setErrors] = useState({});
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    let apiFetch = await fetch(
+      `https://api.scryfall.com/cards/named?exact=${commander}`
+    );
+
+    let apiCard = await apiFetch.json();
+
+    if (
+      apiCard?.type_line &&
+      apiCard?.type_line.slice(0, 18) === "Legendary Creature"
+    ) {
+      setCoverImageUrl(apiCard.image_uris.art_crop);
+      setCardImageUrl(apiCard.image_uris.border_crop);
+    } else if (
+      apiCard?.type_line &&
+      !(apiCard?.type_line.slice(0, 18) === "Legendary Creature")
+    ) {
+      setErrors({ commander: "Commanders must be legendary creatures!" });
+      return null;
+    } else {
+      setErrors({ commander: "Invalid cardname!" });
+      return null;
+    }
+
+    // .then((data) => {
+    //   return data.json();
+    // })
+    // .then((data) => {
+    //   if (
+    //     data?.type_line &&
+    //     data?.type_line.slice(0, 18) === "Legendary Creature"
+    //   ) {
+    //     setCoverImageUrl(data.image_uris.art_crop);
+    //     setCardImageUrl(data.image_uris.border_crop);
+    //   } else if (
+    //     data?.type_line &&
+    //     !(data?.type_line.slice(0, 18) === "Legendary Creature")
+    //   ) {
+    //     setErrors({ commander: "Commanders must be legendary creatures!" });
+    //   } else {
+    //     setErrors({ commander: "Invalid cardname!" });
+    //   }
+    // });
+
     let formData = new FormData();
 
     formData.append("name", name);
     formData.append("description", description);
     formData.append("commander", commander);
+    formData.append("cover_image_url", coverImageUrl);
+    formData.append("card_image_url", cardImageUrl);
 
     let data = await dispatch(ThunkCreateDeck(formData));
 

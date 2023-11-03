@@ -4,6 +4,8 @@ from app.models import db, Deck, MagicCard
 from app.forms import CreateDeckForm
 from app.api.auth_routes import validation_errors_to_error_messages
 from app.api.aws_helpers import get_unique_filename, upload_file_to_s3, remove_file_from_s3
+import requests
+from icecream import ic
 
 deck_routes = Blueprint('decks', __name__)
 
@@ -20,26 +22,43 @@ def create_new_deck():
 
 
     if form.validate_on_submit():
-        # image= form.data['cover_image_url']
-        # image.filename = get_unique_filename(image.filename)
-        # url='https://i.imgur.com/8LMyVdU.jpg'
+        api_card = requests.get(f'https://api.scryfall.com/cards/named?exact={form.data["commander"]}')
+        api_card = api_card.json()
 
+        deck_image = form.data['card_image_url']
+        ic(deck_image)
+        deck_image.filename = get_unique_filename(deck_image.filename)
 
-        # upload = upload_file_to_s3(image)
-        # if "url" not in upload:
-        #     return { 'errors': {'message': 'Oops! something went wrong on our end '}}, 500
-        # url = upload['url']
+        deck_upload = upload_file_to_s3(deck_image)
+        if "url" not in deck_upload:
+            return { 'errors': {'message': 'Oops! something went wrong on our end '}}, 500
+        deck_url = deck_upload['url']
 
+        card_image = form.data['card_image_url']
+        card_image.filename = get_unique_filename(card_image.filename)
 
-        # new_album = Album (
-        #     title = form.data['title'],
-        #     release_date = form.data['release_date'],
-        #     artist = form.data['artist'],
-        #     cover_image_url = url,
-        #     user_owner= current_user.id
-        # )
-        # db.session.add(new_album)
-        # db.session.commit()
+        card_upload = upload_file_to_s3(card_image)
+        if "url" not in card_upload:
+            return { 'errors': {'message': 'Oops! something went wrong on our end '}}, 500
+        card_url = card_upload['url']
 
-        return "hi"
+        new_card = MagicCard (
+            name = api_card['name'],
+            color_identity = "".join(api_card['color_identity']),
+            type = api_card['type_line'],
+            image_url = card_url
+        )
+        db.session.add(new_card)
+        db.session.commit()
+
+        new_deck = Deck (
+            user_id = current_user.id,
+            name = form.data['name'],
+            description = form.data['description'],
+            cover_image_url = deck_url
+        )
+        db.session.add(new_deck)
+        db.session.commit()
+
+        return new_deck.to_dict()
     return { 'errors': validation_errors_to_error_messages(form.errors) }, 400
