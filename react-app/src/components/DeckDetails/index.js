@@ -18,6 +18,10 @@ export default function DeckDetails() {
 
   const currentDeck = decks[id];
 
+  useEffect(() => {
+    fetchAll(dispatch, getAllDecks, getAllCards, getAllComments);
+  }, [currentDeck, cards]);
+
   if (!currentDeck) {
     fetchAll(dispatch, getAllDecks, getAllCards, getAllComments);
   }

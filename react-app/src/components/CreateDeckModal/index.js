@@ -67,8 +67,8 @@ export default function CreateDeck() {
 
     let data = await dispatch(ThunkCreateDeck(formData));
 
-    if (data?.name) {
-      history.push(`/decks/${data.id}`);
+    if (data?.deck) {
+      history.push(`/decks/${data.deck.id}`);
       closeModal();
     } else if (data?.errors) {
       setErrors(data.errors);

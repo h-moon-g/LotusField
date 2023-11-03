@@ -53,6 +53,7 @@ def create_new_deck():
 
         new_deck = Deck (
             user_id = current_user.id,
+            commander_id = new_card.id,
             name = form.data['name'],
             description = form.data['description'],
             cover_image_url = deck_url
@@ -60,5 +61,8 @@ def create_new_deck():
         db.session.add(new_deck)
         db.session.commit()
 
-        return new_deck.to_dict()
+        new_deck.cards_in_deck.append(new_card)
+        db.session.commit()
+
+        return {"deck": new_deck.to_dict(), "card": new_card.to_dict()}
     return { 'errors': validation_errors_to_error_messages(form.errors) }, 400
