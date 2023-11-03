@@ -3,18 +3,11 @@ import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
 import ProfileButton from "./ProfileButton";
 import "./Navigation.css";
+import OpenModalButton from "../OpenModalButton/index";
+import CreateDeckModal from "../CreateDeckModal";
 
 function Navigation({ isLoaded }) {
   const sessionUser = useSelector((state) => state.session.user);
-
-  let createDeckButton = null;
-  if (sessionUser) {
-    createDeckButton = (
-      <div>
-        <button>Create deck</button>
-      </div>
-    );
-  }
 
   return (
     <div>
@@ -23,7 +16,12 @@ function Navigation({ isLoaded }) {
           Home
         </NavLink>
       </div>
-      {createDeckButton}
+      {sessionUser ? (
+        <OpenModalButton
+          buttonText="Create Deck"
+          modalComponent={<CreateDeckModal />}
+        />
+      ) : null}
       {isLoaded && (
         <div>
           <ProfileButton user={sessionUser} />

@@ -1,5 +1,5 @@
 from flask import Blueprint
-from app.models import Deck, Card, Comment
+from app.models import Deck, MagicCard, Comment
 
 
 get_all_routes = Blueprint('all', __name__)
@@ -13,7 +13,7 @@ def get_all():
     decks = Deck.query.all()
     deck_dict_list = [deck.to_dict() for deck in decks]
 
-    cards = Card.query.all()
+    cards = MagicCard.query.all()
     card_dict_list = [card.to_dict() for card in cards]
 
     comments = Comment.query.all()

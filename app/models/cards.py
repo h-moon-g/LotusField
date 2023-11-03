@@ -1,7 +1,7 @@
 from .db import db, environment, SCHEMA, add_prefix_for_prod
 from .associations import deck_cards
 
-class Card(db.Model):
+class MagicCard(db.Model):
     __tablename__= 'cards'
 
     if environment == "production":
