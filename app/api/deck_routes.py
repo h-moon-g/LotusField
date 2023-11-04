@@ -26,6 +26,7 @@ def create_new_deck():
         api_card = api_card.json()
 
         deck_image = form.data['cover_image_url']
+        ic(deck_image)
         deck_image.filename = get_unique_filename(deck_image.filename)
 
         deck_upload = upload_file_to_s3(deck_image)
@@ -61,8 +62,9 @@ def create_new_deck():
         db.session.add(new_deck)
         db.session.commit()
 
+        current_user.user_decks.append(new_deck)
         new_deck.cards_in_deck.append(new_card)
         db.session.commit()
 
-        return {"deck": new_deck.to_dict(), "card": new_card.to_dict()}
+        return new_deck.to_dict()
     return { 'errors': validation_errors_to_error_messages(form.errors) }, 400

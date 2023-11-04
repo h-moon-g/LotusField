@@ -20,7 +20,7 @@ export default function DeckDetails() {
 
   useEffect(() => {
     fetchAll(dispatch, getAllDecks, getAllCards, getAllComments);
-  }, [currentDeck, cards]);
+  }, [user.userDecks]);
 
   if (!currentDeck) {
     fetchAll(dispatch, getAllDecks, getAllCards, getAllComments);
