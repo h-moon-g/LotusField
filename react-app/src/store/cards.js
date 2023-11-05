@@ -1,5 +1,6 @@
 const ALL_CARDS = "cards/getCards";
 const ADD_CARD = "cards/createCard";
+const UPDATE_CARD = "cards/updateCard";
 
 // action creators
 
@@ -17,6 +18,13 @@ export const createCard = (card) => {
   };
 };
 
+export const updateCard = (card) => {
+  return {
+    type: UPDATE_CARD,
+    card,
+  };
+};
+
 // reducer
 
 const initialState = {};
@@ -29,6 +37,8 @@ const cardReducer = (state = initialState, action) => {
       });
       return cardsObj;
     case ADD_CARD:
+      return { ...state, [action.card.id]: action.card };
+    case UPDATE_CARD:
       return { ...state, [action.card.id]: action.card };
     default:
       return state;
