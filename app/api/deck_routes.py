@@ -1,11 +1,10 @@
 from flask import Blueprint, request
 from flask_login import login_required, current_user
 from app.models import db, Deck, MagicCard
-from app.forms import CreateDeckForm
+from app.forms.new_deck_form import CreateDeckForm
 from app.api.auth_routes import validation_errors_to_error_messages
 from app.api.aws_helpers import get_unique_filename, upload_file_to_s3, remove_file_from_s3
-import requests
-from icecream import ic
+
 
 deck_routes = Blueprint('decks', __name__)
 

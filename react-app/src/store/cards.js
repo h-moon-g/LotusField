@@ -1,3 +1,5 @@
+import { updateDeck } from "./decks";
+
 const ALL_CARDS = "cards/getCards";
 const ADD_CARD = "cards/createCard";
 const UPDATE_CARD = "cards/updateCard";
@@ -27,28 +29,36 @@ export const updateCard = (card) => {
 
 // thunks
 
-export const ThunkAddCard = (formData) => async (dispatch) => {
-  // const res = await fetch(`/api/decks/add/card`, {
-  //   method: "POST",
-  //   body: formData,
-  // });
-  // if (res.ok) {
-  //   const data = await res.json();
-  //   if (data.local === "nope") {
-  //     await dispatch(createDeck(data.deck));
-  //     await dispatch(createCard(data.card));
-  //     await dispatch(setUser(data.user));
-  //     return data.deck;
-  //   } else if (data.local === "yup") {
-  //     await dispatch(createDeck(data.deck));
-  //     await dispatch(updateCard(data.card));
-  //     await dispatch(setUser(data.user));
-  //     return data.deck;
-  //   }
-  // } else {
-  //   const data = await res.json();
-  //   return data;
-  // }
+export const ThunkAddCardToDBAndDeck = (formData) => async (dispatch) => {
+  const res = await fetch(`/api/cards/add`, {
+    method: "POST",
+    body: formData,
+  });
+  if (res.ok) {
+    const data = await res.json();
+    await dispatch(updateDeck(data.deck));
+    await dispatch(createCard(data.card));
+    return data.deck;
+  } else {
+    const data = await res.json();
+    return data;
+  }
+};
+
+export const ThunkAddCardToDeck = (formData) => async (dispatch) => {
+  const res = await fetch(`/api/cards/update`, {
+    method: "PUT",
+    body: formData,
+  });
+  if (res.ok) {
+    const data = await res.json();
+    await dispatch(updateDeck(data.deck));
+    await dispatch(updateCard(data.card));
+    return data.deck;
+  } else {
+    const data = await res.json();
+    return data;
+  }
 };
 
 // reducer
