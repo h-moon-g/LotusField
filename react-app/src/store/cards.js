@@ -25,6 +25,32 @@ export const updateCard = (card) => {
   };
 };
 
+// thunks
+
+export const ThunkAddCard = (formData) => async (dispatch) => {
+  // const res = await fetch(`/api/decks/add/card`, {
+  //   method: "POST",
+  //   body: formData,
+  // });
+  // if (res.ok) {
+  //   const data = await res.json();
+  //   if (data.local === "nope") {
+  //     await dispatch(createDeck(data.deck));
+  //     await dispatch(createCard(data.card));
+  //     await dispatch(setUser(data.user));
+  //     return data.deck;
+  //   } else if (data.local === "yup") {
+  //     await dispatch(createDeck(data.deck));
+  //     await dispatch(updateCard(data.card));
+  //     await dispatch(setUser(data.user));
+  //     return data.deck;
+  //   }
+  // } else {
+  //   const data = await res.json();
+  //   return data;
+  // }
+};
+
 // reducer
 
 const initialState = {};

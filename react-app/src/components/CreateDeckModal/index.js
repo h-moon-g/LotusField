@@ -104,7 +104,7 @@ export default function CreateDeck() {
         <div>Create Deck</div>
         {errors.message && <p>{errors.message}</p>}
         <form onSubmit={handleSubmit}>
-          <label className="login-label">
+          <label>
             Name your deck!
             <input
               type="text"
