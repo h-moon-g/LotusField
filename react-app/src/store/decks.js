@@ -1,3 +1,6 @@
+import { setUser } from "./session";
+import { createCard } from "./cards";
+
 const ALL_DECKS = "decks/getDecks";
 const ADD_DECK = "decks/createDeck";
 
@@ -10,10 +13,10 @@ export const getAllDecks = (decks) => {
   };
 };
 
-export const createDeck = (newDeckAndCard) => {
+export const createDeck = (deck) => {
   return {
     type: ADD_DECK,
-    newDeckAndCard,
+    deck,
   };
 };
 
@@ -25,9 +28,11 @@ export const ThunkCreateDeck = (formData) => async (dispatch) => {
     body: formData,
   });
   if (res.ok) {
-    const newDeckAndCard = await res.json();
-    await dispatch(createDeck(newDeckAndCard));
-    return newDeckAndCard;
+    const data = await res.json();
+    await dispatch(createDeck(data.deck));
+    await dispatch(createCard(data.card));
+    await dispatch(setUser(data.user));
+    return data.deck;
   } else {
     const data = await res.json();
     return data;
@@ -48,8 +53,7 @@ const deckReducer = (state = initialState, action) => {
     case ADD_DECK:
       return {
         ...state,
-        [action.newDeckAndCard.deck.id]: action.newDeckAndCard.deck,
-        [action.newDeckAndCard.card.id]: action.newDeckAndCard.card,
+        [action.deck.id]: action.deck,
       };
     default:
       return state;

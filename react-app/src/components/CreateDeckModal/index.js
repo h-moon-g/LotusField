@@ -15,50 +15,65 @@ export default function CreateDeck() {
   const [commander, setCommander] = useState("");
   const [errors, setErrors] = useState({});
 
+  const cards = useSelector((state) => state.cards);
+  const decks = useSelector((state) => state.decks);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    let apiFetch = await fetch(
-      `https://api.scryfall.com/cards/named?exact=${commander}`
-    );
-
-    let apiCard = await apiFetch.json();
-
     let formData = new FormData();
 
-    if (
-      apiCard?.type_line &&
-      apiCard?.type_line.slice(0, 18) === "Legendary Creature"
-    ) {
-      const coverImage = apiCard.image_uris.art_crop;
-      const borderImage = apiCard.image_uris.border_crop;
-      let coverFile = null;
-      let borderFile = null;
-      await fetch(`${coverImage}`)
-        .then((res) => res.blob())
-        .then((myBlob) => {
-          coverFile = new File([myBlob], "cover_image.jpeg", {
-            type: myBlob.type,
-          });
-        });
-      await fetch(`${borderImage}`)
-        .then((res) => res.blob())
-        .then((myBlob) => {
-          borderFile = new File([myBlob], "border_image.jpeg", {
-            type: myBlob.type,
-          });
-        });
-      formData.append("cover_image_url", coverFile);
-      formData.append("card_image_url", borderFile);
-    } else if (
-      apiCard?.type_line &&
-      !(apiCard?.type_line.slice(0, 18) === "Legendary Creature")
-    ) {
-      setErrors({ commander: "Commanders must be legendary creatures!" });
-      return null;
+    const cardInLocalDB = Object.values(cards).find(
+      (card) => card.name === commander
+    );
+
+    if (cardInLocalDB) {
+      const deckWithCardAsCommander = Object.values(decks).find(
+        (deck) => deck.commanderId === cardInLocalDB.id
+      );
+      formData.append("cover_image_url", deckWithCardAsCommander.coverImageUrl);
+      formData.append("card_image_url", cardInLocalDB.imageUrl);
     } else {
-      setErrors({ commander: "Invalid cardname!" });
-      return null;
+      let apiFetch = await fetch(
+        `https://api.scryfall.com/cards/named?exact=${commander}`
+      );
+
+      let apiCard = await apiFetch.json();
+
+      if (
+        apiCard?.type_line &&
+        apiCard?.type_line.slice(0, 18) === "Legendary Creature"
+      ) {
+        const coverImage = apiCard.image_uris.art_crop;
+        const borderImage = apiCard.image_uris.border_crop;
+        let coverFile = null;
+        let borderFile = null;
+        await fetch(`${coverImage}`)
+          .then((res) => res.blob())
+          .then((myBlob) => {
+            coverFile = new File([myBlob], "cover_image.jpeg", {
+              type: myBlob.type,
+            });
+          });
+        await fetch(`${borderImage}`)
+          .then((res) => res.blob())
+          .then((myBlob) => {
+            borderFile = new File([myBlob], "border_image.jpeg", {
+              type: myBlob.type,
+            });
+          });
+        formData.append("cover_image_url", coverFile);
+        formData.append("card_image_url", borderFile);
+      } else if (
+        apiCard?.type_line &&
+        !(apiCard?.type_line.slice(0, 18) === "Legendary Creature")
+      ) {
+        setErrors({ commander: "Commanders must be legendary creatures!" });
+        return null;
+      } else {
+        setErrors({ commander: "Invalid cardname!" });
+        return null;
+      }
     }
 
     formData.append("name", name);
@@ -67,8 +82,8 @@ export default function CreateDeck() {
 
     let data = await dispatch(ThunkCreateDeck(formData));
 
-    if (data?.deck) {
-      history.push(`/decks/${data.deck.id}`);
+    if (data?.name) {
+      history.push(`/decks/${data.id}`);
       closeModal();
     } else if (data?.errors) {
       setErrors(data.errors);
