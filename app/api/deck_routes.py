@@ -22,50 +22,65 @@ def create_new_deck():
 
 
     if form.validate_on_submit():
-        api_card = requests.get(f'https://api.scryfall.com/cards/named?exact={form.data["commander"]}')
-        api_card = api_card.json()
+        if form.data['local_card'] == "nope":
+            deck_image = form.data['cover_image_url']
+            deck_image.filename = get_unique_filename(deck_image.filename)
 
-        deck_image = form.data['cover_image_url']
-        ic(deck_image)
-        deck_image.filename = get_unique_filename(deck_image.filename)
+            deck_upload = upload_file_to_s3(deck_image)
+            if "url" not in deck_upload:
+                return { 'errors': {'message': 'Oops! something went wrong on our end '}}, 500
+            deck_url = deck_upload['url']
 
-        deck_upload = upload_file_to_s3(deck_image)
-        print(deck_upload)
-        if "url" not in deck_upload:
-            return { 'errors': {'message': 'Oops! something went wrong on our end '}}, 500
-        deck_url = deck_upload['url']
+            card_image = form.data['card_image_url']
+            card_image.filename = get_unique_filename(card_image.filename)
 
-        card_image = form.data['card_image_url']
-        card_image.filename = get_unique_filename(card_image.filename)
+            card_upload = upload_file_to_s3(card_image)
+            if "url" not in card_upload:
+                return { 'errors': {'message': 'Oops! something went wrong on our end '}}, 500
+            card_url = card_upload['url']
 
-        card_upload = upload_file_to_s3(card_image)
-        if "url" not in card_upload:
-            return { 'errors': {'message': 'Oops! something went wrong on our end '}}, 500
-        card_url = card_upload['url']
+            new_card = MagicCard (
+                name = form.data['card_name'],
+                color_identity = form.data['color_identity'],
+                type = form.data['type'],
+                image_url = card_url
+            )
+            db.session.add(new_card)
+            db.session.commit()
 
-        new_card = MagicCard (
-            name = api_card['name'],
-            color_identity = "".join(api_card['color_identity']),
-            type = api_card['type_line'],
-            image_url = card_url
-        )
-        db.session.add(new_card)
-        db.session.commit()
+            new_deck = Deck (
+                user_id = current_user.id,
+                commander_id = new_card.id,
+                name = form.data['name'],
+                description = form.data['description'],
+                cover_image_url = deck_url
+            )
+            db.session.add(new_deck)
+            db.session.commit()
 
-        new_deck = Deck (
-            user_id = current_user.id,
-            commander_id = new_card.id,
-            name = form.data['name'],
-            description = form.data['description'],
-            cover_image_url = deck_url
-        )
-        db.session.add(new_deck)
-        db.session.commit()
+            new_deck.cards_in_deck.append(new_card)
+            new_card.decks_with_card.append(new_deck)
+            current_user.users_decks.append(new_deck)
+            db.session.commit()
 
-        new_deck.cards_in_deck.append(new_card)
-        new_card.decks_with_card.append(new_deck)
-        current_user.users_decks.append(new_deck)
-        db.session.commit()
+            return {"deck": new_deck.to_dict(), "card": new_card.to_dict(), "user": current_user.to_dict(), "local": form.data['local_card']}
+        elif form.data['local_card'] == "yup":
+            deck_commander = MagicCard.query.get(form.data['local_card_id'])
 
-        return {"deck": new_deck.to_dict(), "card": new_card.to_dict(), "user": current_user.to_dict()}
+            new_deck = Deck (
+                user_id = current_user.id,
+                commander_id = deck_commander.id,
+                name = form.data['name'],
+                description = form.data['description'],
+                cover_image_url = form.data['local_cover_image_url']
+            )
+            db.session.add(new_deck)
+            db.session.commit()
+
+            new_deck.cards_in_deck.append(deck_commander)
+            deck_commander.decks_with_card.append(new_deck)
+            current_user.users_decks.append(new_deck)
+            db.session.commit()
+
+            return {"deck": new_deck.to_dict(), "card": deck_commander.to_dict(), "user": current_user.to_dict(), "local": form.data['local_card']}
     return { 'errors': validation_errors_to_error_messages(form.errors) }, 400

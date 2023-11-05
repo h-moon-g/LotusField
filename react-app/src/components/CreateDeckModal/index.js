@@ -31,8 +31,12 @@ export default function CreateDeck() {
       const deckWithCardAsCommander = Object.values(decks).find(
         (deck) => deck.commanderId === cardInLocalDB.id
       );
-      formData.append("cover_image_url", deckWithCardAsCommander.coverImageUrl);
-      formData.append("card_image_url", cardInLocalDB.imageUrl);
+      formData.append(
+        "local_cover_image_url",
+        deckWithCardAsCommander.coverImageUrl
+      );
+      formData.append("local_card_id", cardInLocalDB.id);
+      formData.append("local_card", "yup");
     } else {
       let apiFetch = await fetch(
         `https://api.scryfall.com/cards/named?exact=${commander}`
@@ -64,6 +68,10 @@ export default function CreateDeck() {
           });
         formData.append("cover_image_url", coverFile);
         formData.append("card_image_url", borderFile);
+        formData.append("color_identity", apiCard.color_identity.join(""));
+        formData.append("card_name", apiCard.name);
+        formData.append("type", apiCard.type_line);
+        formData.append("local_card", "nope");
       } else if (
         apiCard?.type_line &&
         !(apiCard?.type_line.slice(0, 18) === "Legendary Creature")
