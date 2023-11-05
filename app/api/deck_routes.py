@@ -83,4 +83,31 @@ def create_new_deck():
             db.session.commit()
 
             return {"deck": new_deck.to_dict(), "card": deck_commander.to_dict(), "user": current_user.to_dict(), "local": form.data['local_card']}
+        elif form.data['local_card'] == "yup but no cover":
+            deck_image = form.data['cover_image_url']
+            deck_image.filename = get_unique_filename(deck_image.filename)
+
+            deck_upload = upload_file_to_s3(deck_image)
+            if "url" not in deck_upload:
+                return { 'errors': {'message': 'Oops! something went wrong on our end '}}, 500
+            deck_url = deck_upload['url']
+
+            deck_commander = MagicCard.query.get(form.data['local_card_id'])
+
+            new_deck = Deck (
+                user_id = current_user.id,
+                commander_id = deck_commander.id,
+                name = form.data['name'],
+                description = form.data['description'],
+                cover_image_url = deck_url
+            )
+            db.session.add(new_deck)
+            db.session.commit()
+
+            new_deck.cards_in_deck.append(deck_commander)
+            deck_commander.decks_with_card.append(new_deck)
+            current_user.users_decks.append(new_deck)
+            db.session.commit()
+
+            return {"deck": new_deck.to_dict(), "card": deck_commander.to_dict(), "user": current_user.to_dict(), "local": form.data['local_card']}
     return { 'errors': validation_errors_to_error_messages(form.errors) }, 400

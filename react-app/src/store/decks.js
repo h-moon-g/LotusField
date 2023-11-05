@@ -35,7 +35,7 @@ export const ThunkCreateDeck = (formData) => async (dispatch) => {
       await dispatch(createCard(data.card));
       await dispatch(setUser(data.user));
       return data.deck;
-    } else if (data.local === "yup") {
+    } else {
       await dispatch(createDeck(data.deck));
       await dispatch(updateCard(data.card));
       await dispatch(setUser(data.user));
