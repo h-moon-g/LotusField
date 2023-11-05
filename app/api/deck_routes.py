@@ -62,9 +62,10 @@ def create_new_deck():
         db.session.add(new_deck)
         db.session.commit()
 
-        current_user.user_decks.append(new_deck)
         new_deck.cards_in_deck.append(new_card)
+        new_card.decks_with_card.append(new_deck)
+        current_user.users_decks.append(new_deck)
         db.session.commit()
 
-        return new_deck.to_dict()
+        return {"deck": new_deck.to_dict(), "card": new_card.to_dict(), "user": current_user.to_dict()}
     return { 'errors': validation_errors_to_error_messages(form.errors) }, 400

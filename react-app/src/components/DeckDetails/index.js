@@ -18,9 +18,9 @@ export default function DeckDetails() {
 
   const currentDeck = decks[id];
 
-  useEffect(() => {
-    fetchAll(dispatch, getAllDecks, getAllCards, getAllComments);
-  }, [user.userDecks]);
+  // useEffect(() => {
+  //   fetchAll(dispatch, getAllDecks, getAllCards, getAllComments);
+  // }, []);
 
   if (!currentDeck) {
     fetchAll(dispatch, getAllDecks, getAllCards, getAllComments);

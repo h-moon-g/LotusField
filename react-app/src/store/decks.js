@@ -1,3 +1,6 @@
+import { setUser } from "./session";
+import { createCard } from "./cards";
+
 const ALL_DECKS = "decks/getDecks";
 const ADD_DECK = "decks/createDeck";
 
@@ -25,9 +28,11 @@ export const ThunkCreateDeck = (formData) => async (dispatch) => {
     body: formData,
   });
   if (res.ok) {
-    const newDeck = await res.json();
-    await dispatch(createDeck(newDeck));
-    return newDeck;
+    const data = await res.json();
+    await dispatch(createDeck(data.deck));
+    await dispatch(createCard(data.card));
+    await dispatch(setUser(data.user));
+    return data.deck;
   } else {
     const data = await res.json();
     return data;
