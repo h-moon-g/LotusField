@@ -19,6 +19,7 @@ export default function DeckDetails() {
   const user = useSelector((state) => state.session.user);
   const decks = useSelector((state) => state.decks);
   const cards = useSelector((state) => state.cards);
+  const comments = useSelector((state) => state.comments);
 
   const [addCard, setAddCard] = useState("");
   const [errors, setErrors] = useState({});
@@ -150,12 +151,29 @@ export default function DeckDetails() {
     );
   }
 
+  let commentDisplay = null;
+  const commentsAboutDeckArray = [];
+  if (currentDeck) {
+    for (let commentId of currentDeck.commentsAboutDeck) {
+      commentsAboutDeckArray.push(comments[commentId]);
+    }
+  }
+  commentDisplay = commentsAboutDeckArray.map((comment) => {
+    return (
+      <div>
+        <p>{comment.username}</p>
+        <p>{comment.message}</p>
+      </div>
+    );
+  });
+
   return (
     <div>
       <h1>{currentDeck?.name}</h1>
       <p>{currentDeck?.description}</p>
       {deckOptions}
       {cardDisplay}
+      {commentDisplay}
     </div>
   );
 }
