@@ -55,6 +55,64 @@ export const ThunkCreateDeck = (formData) => async (dispatch) => {
   }
 };
 
+export const ThunkUpdateDeckNotLocal = (formData) => async (dispatch) => {
+  const res = await fetch(`/api/decks/update/new`, {
+    method: "PUT",
+    body: formData,
+  });
+  if (res.ok) {
+    const data = await res.json();
+    await dispatch(createCard(data.card));
+    await dispatch(updateDeck(data.deck));
+    return data.deck;
+  } else {
+    const data = await res.json();
+    return data;
+  }
+};
+
+export const ThunkUpdateDeckNoCover = (formData) => async (dispatch) => {
+  const res = await fetch(`/api/decks/update/local/nocover`, {
+    method: "PUT",
+    body: formData,
+  });
+  if (res.ok) {
+    const data = await res.json();
+    if (data.card_in_deck === "yup") {
+      await dispatch(updateDeck(data.deck));
+      return data.deck;
+    } else {
+      await dispatch(updateCard(data.card));
+      await dispatch(updateDeck(data.deck));
+      return data.deck;
+    }
+  } else {
+    const data = await res.json();
+    return data;
+  }
+};
+
+export const ThunkUpdateDeckHasCover = (formData) => async (dispatch) => {
+  const res = await fetch(`/api/decks/update/local/hascover`, {
+    method: "PUT",
+    body: formData,
+  });
+  if (res.ok) {
+    const data = await res.json();
+    if (data.card_in_deck === "yup") {
+      await dispatch(updateDeck(data.deck));
+      return data.deck;
+    } else {
+      await dispatch(updateCard(data.card));
+      await dispatch(updateDeck(data.deck));
+      return data.deck;
+    }
+  } else {
+    const data = await res.json();
+    return data;
+  }
+};
+
 // reducer
 
 const initialState = {};

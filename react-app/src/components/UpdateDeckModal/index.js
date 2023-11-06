@@ -3,7 +3,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
 import { useModal } from "../../context/Modal";
 import "./UpdateDeckModal.css";
-import { ThunkCreateDeck } from "../../store/decks";
+import { ThunkUpdateDeckHasCover } from "../../store/decks";
+import { ThunkUpdateDeckNoCover } from "../../store/decks";
+import { ThunkUpdateDeckNotLocal } from "../../store/decks";
 
 export default function UpdateDeck(id) {
   const dispatch = useDispatch();
@@ -24,32 +26,53 @@ export default function UpdateDeck(id) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     let formData = new FormData();
-
-    const cardInLocalDB = Object.values(cards).find(
-      (card) => card.name === commander
+    let apiFetch = await fetch(
+      `https://api.scryfall.com/cards/named?exact=${commander}`
     );
-
-    if (cardInLocalDB) {
-      const deckWithCardAsCommander = Object.values(decks).find(
-        (deck) => deck.commanderId === cardInLocalDB.id
+    let apiCard = await apiFetch.json();
+    if (
+      apiCard?.type_line &&
+      !(apiCard?.type_line.slice(0, 18) === "Legendary Creature")
+    ) {
+      setErrors({ commander: "Commanders must be legendary creatures!" });
+      return null;
+    } else if (!apiCard?.type_line) {
+      setErrors({ commander: "Invalid cardname!" });
+      return null;
+    } else {
+      formData.append("name", name);
+      formData.append("description", description);
+      formData.append("commander", commander);
+      formData.append("deck_id", currentDeck.id);
+      const cardInLocalDB = Object.values(cards).find(
+        (card) => card.name === apiCard.name
       );
-      if (deckWithCardAsCommander) {
-        formData.append(
-          "local_cover_image_url",
-          deckWithCardAsCommander.coverImageUrl
+      if (cardInLocalDB) {
+        formData.append("card_id", cardInLocalDB.id);
+        const cardInCurrentDeck = Object.values(currentDeck.cardsInDeck).find(
+          (id) => id === cardInLocalDB.id
         );
-        formData.append("local_card_id", cardInLocalDB.id);
-        formData.append("local_card", "yup");
-      } else {
-        if (
-          deckWithCardAsCommander?.type.slice(0, 18) === "Legendary Creature"
-        ) {
-          let apiFetch = await fetch(
-            `https://api.scryfall.com/cards/named?exact=${commander}`
+        const deckWithCardAsCommander = Object.values(decks).find(
+          (deck) => deck.commanderId === cardInLocalDB.id
+        );
+        if (deckWithCardAsCommander) {
+          formData.append(
+            "local_cover_image_url",
+            deckWithCardAsCommander.coverImageUrl
           );
-          let apiCard = await apiFetch.json();
+          if (cardInCurrentDeck) {
+            formData.append("card_in_deck", "yup");
+          } else {
+            formData.append("card_in_deck", "nope");
+          }
+          let data = await dispatch(ThunkUpdateDeckHasCover(formData));
+          if (data?.name) {
+            closeModal();
+          } else if (data?.errors) {
+            setErrors(data.errors);
+          }
+        } else {
           const coverImage = apiCard.image_uris.art_crop;
           let coverFile = null;
           await fetch(`${coverImage}`)
@@ -60,22 +83,19 @@ export default function UpdateDeck(id) {
               });
             });
           formData.append("cover_image_url", coverFile);
-          formData.append("local_card_id", cardInLocalDB.id);
-          formData.append("local_card", "yup but no cover");
-        } else {
-          setErrors({ commander: "Commanders must be legendary creatures!" });
-          return null;
+          if (cardInCurrentDeck) {
+            formData.append("card_in_deck", "yup");
+          } else {
+            formData.append("card_in_deck", "nope");
+          }
+          let data = await dispatch(ThunkUpdateDeckNoCover(formData));
+          if (data?.name) {
+            closeModal();
+          } else if (data?.errors) {
+            setErrors(data.errors);
+          }
         }
-      }
-    } else {
-      let apiFetch = await fetch(
-        `https://api.scryfall.com/cards/named?exact=${commander}`
-      );
-      let apiCard = await apiFetch.json();
-      if (
-        apiCard?.type_line &&
-        apiCard?.type_line.slice(0, 18) === "Legendary Creature"
-      ) {
+      } else {
         const coverImage = apiCard.image_uris.art_crop;
         const borderImage = apiCard.image_uris.border_crop;
         let coverFile = null;
@@ -99,30 +119,13 @@ export default function UpdateDeck(id) {
         formData.append("color_identity", apiCard.color_identity.join(""));
         formData.append("card_name", apiCard.name);
         formData.append("type", apiCard.type_line);
-        formData.append("local_card", "nope");
-      } else if (
-        apiCard?.type_line &&
-        !(apiCard?.type_line.slice(0, 18) === "Legendary Creature")
-      ) {
-        setErrors({ commander: "Commanders must be legendary creatures!" });
-        return null;
-      } else {
-        setErrors({ commander: "Invalid cardname!" });
-        return null;
+        let data = await dispatch(ThunkUpdateDeckNotLocal(formData));
+        if (data?.name) {
+          closeModal();
+        } else if (data?.errors) {
+          setErrors(data.errors);
+        }
       }
-    }
-
-    formData.append("name", name);
-    formData.append("description", description);
-    formData.append("commander", commander);
-
-    let data = await dispatch(ThunkCreateDeck(formData));
-
-    if (data?.name) {
-      history.push(`/decks/${data.id}`);
-      closeModal();
-    } else if (data?.errors) {
-      setErrors(data.errors);
     }
   };
 
