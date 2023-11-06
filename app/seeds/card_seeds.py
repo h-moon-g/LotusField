@@ -1,65 +1,65 @@
-from app.models import db, Card, environment, SCHEMA
+from app.models import db, MagicCard, environment, SCHEMA
 from sqlalchemy.sql import text
 
 
 def seed_cards():
-    card_1 = Card(
+    card_1 = MagicCard(
         name="Giada, Font of Hope",
         color_identity="W",
         type="Legendary Creature — Angel",
         image_url="https://lotusfieldbucket.s3.us-west-2.amazonaws.com/giada-font-of-hope.jpg",
     )
 
-    card_2 = Card(
+    card_2 = MagicCard(
         name="Plains",
         color_identity="W",
         type="Basic Land — Plains",
         image_url="https://lotusfieldbucket.s3.us-west-2.amazonaws.com/plains.jpg"
     )
 
-    card_3 = Card(
+    card_3 = MagicCard(
         name="Archangel of Thune",
         color_identity="W",
         type="Creature — Angel",
         image_url="https://lotusfieldbucket.s3.us-west-2.amazonaws.com/archangel-of-thune.jpg"
     )
 
-    card_4 = Card(
+    card_4 = MagicCard(
         name="Prosper, Tome-Bound",
         color_identity="BR",
         type="Legendary Creature — Tiefling Warlock",
         image_url="https://lotusfieldbucket.s3.us-west-2.amazonaws.com/prosper-tome-bound.jpg",
     )
 
-    card_5 = Card(
+    card_5 = MagicCard(
         name="Swamp",
         color_identity="B",
         type="Basic Land — Swamp",
         image_url="https://lotusfieldbucket.s3.us-west-2.amazonaws.com/swamp.jpg"
     )
 
-    card_6 = Card(
+    card_6 = MagicCard(
         name="Jeska's Will",
         color_identity="R",
         type="Sorcery",
         image_url="https://lotusfieldbucket.s3.us-west-2.amazonaws.com/jeskas-will.jpg"
     )
 
-    card_7 = Card(
+    card_7 = MagicCard(
         name="Sythis, Harvest's Hand",
         color_identity="GW",
         type="Legendary Enchantment Creature — Nymph",
         image_url="https://lotusfieldbucket.s3.us-west-2.amazonaws.com/sythis-harvest-s-hand.jpg",
     )
 
-    card_8 = Card(
+    card_8 = MagicCard(
         name="Forest",
         color_identity="G",
         type="Basic Land — Forest",
         image_url="https://lotusfieldbucket.s3.us-west-2.amazonaws.com/forest.jpg"
     )
 
-    card_9 = Card(
+    card_9 = MagicCard(
         name="Dueling Grounds",
         color_identity="GW",
         type="Enchantment",

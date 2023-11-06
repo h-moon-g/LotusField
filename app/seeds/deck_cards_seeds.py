@@ -1,11 +1,11 @@
-from app.models import db, Deck, environment, Card, SCHEMA
+from app.models import db, Deck, environment, MagicCard, SCHEMA
 from sqlalchemy.sql import text
 
 
 def seed_deck_cards():
 
     decks = Deck.query.all()
-    cards = Card.query.all()
+    cards = MagicCard.query.all()
     decks[0].cards_in_deck.extend([cards[0], cards[1], cards[2]])
     decks[1].cards_in_deck.extend([cards[3], cards[4], cards[5]])
     decks[2].cards_in_deck.extend([cards[6], cards[7], cards[8]])
