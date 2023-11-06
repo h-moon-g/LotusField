@@ -122,7 +122,7 @@ export default function DeckDetails() {
   }
   cardDisplay = cardsInDeckArray.map((card) => {
     let deleteCardButton = null;
-    if (user.id === currentDeck.userId) {
+    if (user?.id === currentDeck.userId) {
       deleteCardButton = (
         <button onClick={(e) => handleCardDelete(card?.id)}>
           Remove card from deck
@@ -191,8 +191,8 @@ export default function DeckDetails() {
             buttonText="Update Comment"
             modalComponent={
               <UpdateCommentModal
-                message={comment.message}
-                commentId={comment.id}
+                message={comment?.message}
+                commentId={comment?.id}
               />
             }
           />
@@ -200,7 +200,7 @@ export default function DeckDetails() {
             buttonText="Delete Comment"
             modalComponent={
               <DeleteCommentModal
-                commentId={comment.id}
+                commentId={comment?.id}
                 deckId={currentDeck.id}
               />
             }
@@ -217,20 +217,23 @@ export default function DeckDetails() {
     );
   });
 
-  const addCommentDisplay = (
-    <form onSubmit={handleCommentSubmit}>
-      <label>
-        Add a comment!
-        <input
-          type="text"
-          value={addComment}
-          onChange={(e) => setAddComment(e.target.value)}
-        />
-      </label>
-      {errors.addComment && <p>{errors.addComment}</p>}
-      <button type="submit">Add comment</button>
-    </form>
-  );
+  let addCommentDisplay = null;
+  if (user?.id) {
+    addCommentDisplay = (
+      <form onSubmit={handleCommentSubmit}>
+        <label>
+          Add a comment!
+          <input
+            type="text"
+            value={addComment}
+            onChange={(e) => setAddComment(e.target.value)}
+          />
+        </label>
+        {errors.addComment && <p>{errors.addComment}</p>}
+        <button type="submit">Add comment</button>
+      </form>
+    );
+  }
 
   return (
     <div>
