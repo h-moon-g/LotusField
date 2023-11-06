@@ -2,6 +2,7 @@ from flask import Blueprint, request
 from flask_login import login_required, current_user
 from app.models import db, Deck, Comment
 from app.forms.new_comment_form import CreateCommentForm
+from app.forms.update_comment_form import UpdateCommentForm
 from app.api.auth_routes import validation_errors_to_error_messages
 
 comment_routes = Blueprint('comments', __name__)
@@ -50,3 +51,24 @@ def delete_comment(commentId, deckId):
     deck = Deck.query.get(deckId)
 
     return {'deck': deck.to_dict(), 'message': 'Successfully Deleted'}
+
+
+@comment_routes.route('/update', methods=['PUT'])
+@login_required
+def update_comment():
+    """
+    Updates a comment for a deck.
+    """
+    form = UpdateCommentForm()
+
+    form['csrf_token'].data = request.cookies['csrf_token']
+
+
+    if form.validate_on_submit():
+        comment = Comment.query.get(form.data['comment_id'])
+
+        comment.message = form.data['message']
+        db.session.commit()
+
+        return {"comment": comment.to_dict()}
+    return { 'errors': validation_errors_to_error_messages(form.errors) }, 400

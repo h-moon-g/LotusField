@@ -14,6 +14,7 @@ import OpenModalButton from "../OpenModalButton/index";
 import UpdateDeckModal from "../UpdateDeckModal";
 import DeleteDeckModal from "../DeleteDeckModal";
 import DeleteCommentModal from "../DeleteCommentModal";
+import UpdateCommentModal from "../UpdateCommentModal";
 
 export default function DeckDetails() {
   const { id } = useParams();
@@ -186,7 +187,15 @@ export default function DeckDetails() {
     if (user?.id === comment?.userId) {
       commentOptions = (
         <div>
-          <button>Update comment</button>
+          <OpenModalButton
+            buttonText="Update Comment"
+            modalComponent={
+              <UpdateCommentModal
+                message={comment.message}
+                commentId={comment.id}
+              />
+            }
+          />
           <OpenModalButton
             buttonText="Delete Comment"
             modalComponent={
