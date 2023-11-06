@@ -31,19 +31,43 @@ export default function CreateDeck() {
       const deckWithCardAsCommander = Object.values(decks).find(
         (deck) => deck.commanderId === cardInLocalDB.id
       );
-      formData.append(
-        "local_cover_image_url",
-        deckWithCardAsCommander.coverImageUrl
-      );
-      formData.append("local_card_id", cardInLocalDB.id);
-      formData.append("local_card", "yup");
+      if (deckWithCardAsCommander) {
+        formData.append(
+          "local_cover_image_url",
+          deckWithCardAsCommander.coverImageUrl
+        );
+        formData.append("local_card_id", cardInLocalDB.id);
+        formData.append("local_card", "yup");
+      } else {
+        if (
+          deckWithCardAsCommander?.type.slice(0, 18) === "Legendary Creature"
+        ) {
+          let apiFetch = await fetch(
+            `https://api.scryfall.com/cards/named?exact=${commander}`
+          );
+          let apiCard = await apiFetch.json();
+          const coverImage = apiCard.image_uris.art_crop;
+          let coverFile = null;
+          await fetch(`${coverImage}`)
+            .then((res) => res.blob())
+            .then((myBlob) => {
+              coverFile = new File([myBlob], "cover_image.jpeg", {
+                type: myBlob.type,
+              });
+            });
+          formData.append("cover_image_url", coverFile);
+          formData.append("local_card_id", cardInLocalDB.id);
+          formData.append("local_card", "yup but no cover");
+        } else {
+          setErrors({ commander: "Commanders must be legendary creatures!" });
+          return null;
+        }
+      }
     } else {
       let apiFetch = await fetch(
         `https://api.scryfall.com/cards/named?exact=${commander}`
       );
-
       let apiCard = await apiFetch.json();
-
       if (
         apiCard?.type_line &&
         apiCard?.type_line.slice(0, 18) === "Legendary Creature"
@@ -104,7 +128,7 @@ export default function CreateDeck() {
         <div>Create Deck</div>
         {errors.message && <p>{errors.message}</p>}
         <form onSubmit={handleSubmit}>
-          <label className="login-label">
+          <label>
             Name your deck!
             <input
               type="text"

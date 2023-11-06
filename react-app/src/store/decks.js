@@ -4,6 +4,7 @@ import { updateCard } from "./cards";
 
 const ALL_DECKS = "decks/getDecks";
 const ADD_DECK = "decks/createDeck";
+const UPDATE_DECK = "decks/updateDeck";
 
 // action creators
 
@@ -17,6 +18,13 @@ export const getAllDecks = (decks) => {
 export const createDeck = (deck) => {
   return {
     type: ADD_DECK,
+    deck,
+  };
+};
+
+export const updateDeck = (deck) => {
+  return {
+    type: UPDATE_DECK,
     deck,
   };
 };
@@ -35,7 +43,7 @@ export const ThunkCreateDeck = (formData) => async (dispatch) => {
       await dispatch(createCard(data.card));
       await dispatch(setUser(data.user));
       return data.deck;
-    } else if (data.local === "yup") {
+    } else {
       await dispatch(createDeck(data.deck));
       await dispatch(updateCard(data.card));
       await dispatch(setUser(data.user));
@@ -59,6 +67,11 @@ const deckReducer = (state = initialState, action) => {
       });
       return decksObj;
     case ADD_DECK:
+      return {
+        ...state,
+        [action.deck.id]: action.deck,
+      };
+    case UPDATE_DECK:
       return {
         ...state,
         [action.deck.id]: action.deck,
