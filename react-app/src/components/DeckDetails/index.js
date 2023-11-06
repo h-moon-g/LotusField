@@ -30,36 +30,31 @@ export default function DeckDetails() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     let formData = new FormData();
-
-    const words = addCard.split(" ");
-    for (let i = 0; i < words.length; i++) {
-      words[i] = words[i][0].toUpperCase() + words[i].slice(1);
-    }
-    const capitalAddCard = words.join(" ");
-
-    const cardInLocalDB = Object.values(cards).find(
-      (card) => card.name === capitalAddCard
+    let apiFetch = await fetch(
+      `https://api.scryfall.com/cards/named?exact=${addCard}`
     );
-    if (cardInLocalDB) {
-      const cardInCurrentDeck = currentDeck.cardsInDeck.find(
-        (card) => card === cardInLocalDB.id
+    let apiCard = await apiFetch.json();
+    if (apiCard?.name) {
+      const cardInLocalDB = Object.values(cards).find(
+        (card) => card.name === apiCard?.name
       );
-      if (cardInCurrentDeck) {
-        setErrors({ addCard: "Card already in deck!" });
-        return null;
-      }
-      formData.append("card_id", cardInLocalDB.id);
-      formData.append("deck_id", currentDeck.id);
-      let data = await dispatch(ThunkAddCardToDeck(formData));
-      if (data?.errors) {
-        setErrors(data.errors);
-      }
-    } else {
-      let apiFetch = await fetch(
-        `https://api.scryfall.com/cards/named?exact=${addCard}`
-      );
-      let apiCard = await apiFetch.json();
-      if (apiCard?.type_line) {
+      if (cardInLocalDB) {
+        const cardInCurrentDeck = currentDeck.cardsInDeck.find(
+          (card) => card === cardInLocalDB.id
+        );
+        if (cardInCurrentDeck) {
+          setErrors({ addCard: "Card already in deck!" });
+          return null;
+        }
+        formData.append("card_id", cardInLocalDB.id);
+        formData.append("deck_id", currentDeck.id);
+        let data = await dispatch(ThunkAddCardToDeck(formData));
+        if (data?.errors) {
+          setErrors(data.errors);
+        } else {
+          setAddCard("");
+        }
+      } else {
         const borderImage = apiCard.image_uris.border_crop;
         let borderFile = null;
         await fetch(`${borderImage}`)
@@ -77,11 +72,13 @@ export default function DeckDetails() {
         let data = await dispatch(ThunkAddCardToDBAndDeck(formData));
         if (data?.errors) {
           setErrors(data.errors);
+        } else {
+          setAddCard("");
         }
-      } else {
-        setErrors({ addCard: "Invalid cardname!" });
-        return null;
       }
+    } else {
+      setErrors({ addCard: "Invalid cardname!" });
+      return null;
     }
   };
 
