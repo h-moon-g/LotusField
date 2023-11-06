@@ -61,6 +61,21 @@ export const ThunkAddCardToDeck = (formData) => async (dispatch) => {
   }
 };
 
+export const ThunkRemoveCard = (cardId, deckId) => async (dispatch) => {
+  const res = await fetch(`/api/cards/${deckId}/${cardId}/delete`, {
+    method: "DELETE",
+  });
+  if (res.ok) {
+    const data = await res.json();
+    await dispatch(updateDeck(data.deck));
+    await dispatch(updateCard(data.card));
+    return data.deck;
+  } else {
+    const data = await res.json();
+    return data;
+  }
+};
+
 // reducer
 
 const initialState = {};

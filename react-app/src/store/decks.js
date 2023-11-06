@@ -5,6 +5,7 @@ import { updateCard } from "./cards";
 const ALL_DECKS = "decks/getDecks";
 const ADD_DECK = "decks/createDeck";
 const UPDATE_DECK = "decks/updateDeck";
+const DELETE_DECK = "decks/deleteDeck";
 
 // action creators
 
@@ -26,6 +27,13 @@ export const updateDeck = (deck) => {
   return {
     type: UPDATE_DECK,
     deck,
+  };
+};
+
+export const deleteDeck = (id) => {
+  return {
+    type: DELETE_DECK,
+    id,
   };
 };
 
@@ -113,6 +121,21 @@ export const ThunkUpdateDeckHasCover = (formData) => async (dispatch) => {
   }
 };
 
+export const ThunkDeleteDeck = (id) => async (dispatch) => {
+  const res = await fetch(`/api/decks/${id}/delete`, {
+    method: "DELETE",
+  });
+  if (res.ok) {
+    const data = await res.json();
+    dispatch(deleteDeck(id));
+    dispatch(setUser(data.user));
+    return data;
+  } else {
+    const data = await res.json();
+    return data;
+  }
+};
+
 // reducer
 
 const initialState = {};
@@ -134,6 +157,10 @@ const deckReducer = (state = initialState, action) => {
         ...state,
         [action.deck.id]: action.deck,
       };
+    case DELETE_DECK:
+      const newState = { ...state };
+      delete newState[action.id];
+      return newState;
     default:
       return state;
   }
