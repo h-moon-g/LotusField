@@ -13,6 +13,7 @@ import { ThunkAddCommentToDeck } from "../../store/comments";
 import OpenModalButton from "../OpenModalButton/index";
 import UpdateDeckModal from "../UpdateDeckModal";
 import DeleteDeckModal from "../DeleteDeckModal";
+import DeleteCommentModal from "../DeleteCommentModal";
 
 export default function DeckDetails() {
   const { id } = useParams();
@@ -181,10 +182,28 @@ export default function DeckDetails() {
     }
   }
   commentDisplay = commentsAboutDeckArray.map((comment) => {
+    let commentOptions = null;
+    if (user?.id === comment?.userId) {
+      commentOptions = (
+        <div>
+          <button>Update comment</button>
+          <OpenModalButton
+            buttonText="Delete Comment"
+            modalComponent={
+              <DeleteCommentModal
+                commentId={comment.id}
+                deckId={currentDeck.id}
+              />
+            }
+          />
+        </div>
+      );
+    }
     return (
       <div>
         <p>{comment?.username}</p>
         <p>{comment?.message}</p>
+        {commentOptions}
       </div>
     );
   });

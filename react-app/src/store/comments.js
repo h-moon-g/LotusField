@@ -2,6 +2,7 @@ import { updateDeck } from "./decks";
 
 const ALL_COMMENTS = "comments/getComments";
 const ADD_COMMENT = "comments/createComment";
+const DELETE_COMMENT = "comments/deleteComment";
 
 // action creators
 
@@ -16,6 +17,13 @@ export const createComment = (comment) => {
   return {
     type: ADD_COMMENT,
     comment,
+  };
+};
+
+export const deleteComment = (id) => {
+  return {
+    type: DELETE_COMMENT,
+    id,
   };
 };
 
@@ -37,6 +45,21 @@ export const ThunkAddCommentToDeck = (formData) => async (dispatch) => {
   }
 };
 
+export const ThunkDeleteComment = (commentId, deckId) => async (dispatch) => {
+  const res = await fetch(`/api/comments/${commentId}/${deckId}/delete`, {
+    method: "DELETE",
+  });
+  if (res.ok) {
+    const data = await res.json();
+    dispatch(deleteComment(commentId));
+    dispatch(updateDeck(data.deck));
+    return data;
+  } else {
+    const data = await res.json();
+    return data;
+  }
+};
+
 // reducer
 
 const initialState = {};
@@ -50,6 +73,10 @@ const commentReducer = (state = initialState, action) => {
       return commentsObj;
     case ADD_COMMENT:
       return { ...state, [action.comment.id]: action.comment };
+    case DELETE_COMMENT:
+      const newState = { ...state };
+      delete newState[action.id];
+      return newState;
     default:
       return state;
   }

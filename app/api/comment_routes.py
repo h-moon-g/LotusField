@@ -34,3 +34,19 @@ def create_new_comment():
 
         return {"deck": deck_for_comment.to_dict(), "comment": new_comment.to_dict()}
     return { 'errors': validation_errors_to_error_messages(form.errors) }, 400
+
+
+@comment_routes.route('/<int:commentId>/<int:deckId>/delete', methods=['DELETE'])
+@login_required
+def delete_comment(commentId, deckId):
+    """
+    Deleting comment created by the user.
+    """
+    comment = Comment.query.get(commentId)
+
+    db.session.delete(comment)
+    db.session.commit()
+
+    deck = Deck.query.get(deckId)
+
+    return {'deck': deck.to_dict(), 'message': 'Successfully Deleted'}
