@@ -8,6 +8,7 @@ import { getAllComments } from "../../store/comments";
 import fetchAll from "../utils";
 import { ThunkAddCardToDBAndDeck } from "../../store/cards";
 import { ThunkAddCardToDeck } from "../../store/cards";
+import { ThunkRemoveCard } from "../../store/cards";
 import OpenModalButton from "../OpenModalButton/index";
 import UpdateDeckModal from "../UpdateDeckModal";
 
@@ -84,6 +85,14 @@ export default function DeckDetails() {
     }
   };
 
+  const handleCardDelete = async (id) => {
+    console.log(id);
+    let data = await dispatch(ThunkRemoveCard(id, currentDeck.id));
+    if (data.errors) {
+      setErrors(data.errors);
+    }
+  };
+
   let cardDisplay = null;
 
   const cardsInDeckArray = [];
@@ -93,28 +102,23 @@ export default function DeckDetails() {
     }
   }
   cardDisplay = cardsInDeckArray.map((card) => {
-    return (
-      <div>
-        <img src={card?.imageUrl} alt={`Cover for ${card?.name}`} />
-      </div>
-    );
-  });
-
-  useEffect(() => {
-    const cardsInDeckArray = [];
-    if (currentDeck) {
-      for (let cardId of currentDeck.cardsInDeck) {
-        cardsInDeckArray.push(cards[cardId]);
-      }
-    }
-    cardDisplay = cardsInDeckArray.map((card) => {
+    if (card?.id !== currentDeck.commanderId) {
+      return (
+        <div>
+          <img src={card?.imageUrl} alt={`Cover for ${card?.name}`} />
+          <button onClick={(e) => handleCardDelete(card?.id)}>
+            Remove card from deck
+          </button>
+        </div>
+      );
+    } else {
       return (
         <div>
           <img src={card?.imageUrl} alt={`Cover for ${card?.name}`} />
         </div>
       );
-    });
-  }, [currentDeck?.cardsInDeck]);
+    }
+  });
 
   let deckOptions = null;
   if (user?.id === currentDeck?.userId) {

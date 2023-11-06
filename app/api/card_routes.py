@@ -6,7 +6,6 @@ from app.forms.add_card_form import AddCardToDeckForm
 from app.api.auth_routes import validation_errors_to_error_messages
 from app.api.aws_helpers import get_unique_filename, upload_file_to_s3, remove_file_from_s3
 
-
 card_routes = Blueprint('cards', __name__)
 
 
@@ -70,3 +69,20 @@ def add_card_to_deck():
 
         return {"deck": deck_for_card.to_dict(), "card": card_for_deck.to_dict()}
     return { 'errors': validation_errors_to_error_messages(form.errors) }, 400
+
+
+@card_routes.route('/<int:deckId>/<int:cardId>/delete', methods=['DELETE'])
+@login_required
+def remove_card_from_deck(deckId, cardId):
+    """
+    Removes card from deck.
+    """
+    removed_card = MagicCard.query.get(cardId)
+    deck_with_card = Deck.query.get(deckId)
+
+    cardIdx = deck_with_card.cards_in_deck.index(removed_card)
+
+    deck_with_card.cards_in_deck.pop(cardIdx)
+    db.session.commit()
+
+    return {"deck": deck_with_card.to_dict(), "card": removed_card.to_dict()}
