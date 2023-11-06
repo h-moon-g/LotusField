@@ -2,6 +2,7 @@ from flask import Blueprint, request
 from flask_login import login_required, current_user
 from app.models import db, Deck, MagicCard
 from app.forms.new_card_form import CreateCardForm
+from app.forms.add_card_form import AddCardToDeckForm
 from app.api.auth_routes import validation_errors_to_error_messages
 from app.api.aws_helpers import get_unique_filename, upload_file_to_s3, remove_file_from_s3
 
@@ -45,4 +46,27 @@ def create_new_card():
         db.session.commit()
 
         return {"deck": deck_for_card.to_dict(), "card": new_card.to_dict()}
+    return { 'errors': validation_errors_to_error_messages(form.errors) }, 400
+
+
+@card_routes.route('/update', methods=['PUT'])
+@login_required
+def add_card_to_deck():
+    """
+    Creates new card. Creates relationship between card and deck. Returns dictionary.
+    """
+    form = AddCardToDeckForm()
+
+    form['csrf_token'].data = request.cookies['csrf_token']
+
+
+    if form.validate_on_submit():
+        card_for_deck = MagicCard.query.get(form.data['card_id'])
+        deck_for_card = Deck.query.get(form.data['deck_id'])
+
+        deck_for_card.cards_in_deck.append(card_for_deck)
+        card_for_deck.decks_with_card.append(deck_for_card)
+        db.session.commit()
+
+        return {"deck": deck_for_card.to_dict(), "card": card_for_deck.to_dict()}
     return { 'errors': validation_errors_to_error_messages(form.errors) }, 400
