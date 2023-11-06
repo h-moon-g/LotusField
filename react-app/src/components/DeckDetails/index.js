@@ -30,10 +30,24 @@ export default function DeckDetails() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     let formData = new FormData();
+
+    const words = addCard.split(" ");
+    for (let i = 0; i < words.length; i++) {
+      words[i] = words[i][0].toUpperCase() + words[i].slice(1);
+    }
+    const capitalAddCard = words.join(" ");
+
     const cardInLocalDB = Object.values(cards).find(
-      (card) => card.name === addCard
+      (card) => card.name === capitalAddCard
     );
     if (cardInLocalDB) {
+      const cardInCurrentDeck = currentDeck.cardsInDeck.find(
+        (card) => card === cardInLocalDB.id
+      );
+      if (cardInCurrentDeck) {
+        setErrors({ addCard: "Card already in deck!" });
+        return null;
+      }
       formData.append("card_id", cardInLocalDB.id);
       formData.append("deck_id", currentDeck.id);
       let data = await dispatch(ThunkAddCardToDeck(formData));
@@ -65,7 +79,7 @@ export default function DeckDetails() {
           setErrors(data.errors);
         }
       } else {
-        setErrors({ commander: "Invalid cardname!" });
+        setErrors({ addCard: "Invalid cardname!" });
         return null;
       }
     }
