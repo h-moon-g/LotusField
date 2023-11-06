@@ -11,6 +11,7 @@ import { ThunkAddCardToDeck } from "../../store/cards";
 import { ThunkRemoveCard } from "../../store/cards";
 import OpenModalButton from "../OpenModalButton/index";
 import UpdateDeckModal from "../UpdateDeckModal";
+import DeleteDeckModal from "../DeleteDeckModal";
 
 export default function DeckDetails() {
   const { id } = useParams();
@@ -86,7 +87,6 @@ export default function DeckDetails() {
   };
 
   const handleCardDelete = async (id) => {
-    console.log(id);
     let data = await dispatch(ThunkRemoveCard(id, currentDeck.id));
     if (data.errors) {
       setErrors(data.errors);
@@ -129,7 +129,10 @@ export default function DeckDetails() {
             buttonText="Update Deck"
             modalComponent={<UpdateDeckModal id={id} />}
           />
-          <button>Delete deck</button>
+          <OpenModalButton
+            buttonText="Delete Deck"
+            modalComponent={<DeleteDeckModal id={id} />}
+          />
         </div>
         <form onSubmit={handleSubmit}>
           <label>

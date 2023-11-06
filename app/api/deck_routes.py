@@ -8,7 +8,6 @@ from app.forms.update_deck_form import UpdateDeckFormHasCover
 from app.api.auth_routes import validation_errors_to_error_messages
 from app.api.aws_helpers import get_unique_filename, upload_file_to_s3, remove_file_from_s3
 
-
 deck_routes = Blueprint('decks', __name__)
 
 
@@ -237,3 +236,17 @@ def update_deck_has_cover():
 
                 return {"deck": deck_to_update.to_dict(), "card": new_commander.to_dict(), "card_in_deck": form.data['card_in_deck']}
     return { 'errors': validation_errors_to_error_messages(form.errors) }, 400
+
+
+@deck_routes.route('/<int:id>/delete', methods=['DELETE'])
+@login_required
+def delete_deck(id):
+    """
+    Deleting deck created by the user.
+    """
+    deck = Deck.query.get(id)
+
+    db.session.delete(deck)
+    db.session.commit()
+
+    return {'user': current_user.to_dict(), 'message': 'Successfully Deleted'}
