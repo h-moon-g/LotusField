@@ -114,7 +114,7 @@ def create_new_deck():
     return { 'errors': validation_errors_to_error_messages(form.errors) }, 400
 
 
-@deck_routes.route('/update', methods=['PUT'])
+@deck_routes.route('/update/new', methods=['PUT'])
 @login_required
 def update_deck_not_local():
     """
@@ -152,9 +152,9 @@ def update_deck_not_local():
 
             deck_to_update = Deck.query.get(form.data['deck_id'])
 
-            deck_to_update.commander_id = new_card.id,
-            deck_to_update.name = form.data['name'],
-            deck_to_update.description = form.data['description'],
+            deck_to_update.commander_id = new_card.id
+            deck_to_update.name = form.data['name']
+            deck_to_update.description = form.data['description']
             deck_to_update.cover_image_url = deck_url
 
             db.session.commit()
