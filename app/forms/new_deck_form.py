@@ -6,7 +6,7 @@ from wtforms.validators import DataRequired, Length
 
 class CreateDeckForm(FlaskForm):
     name = StringField("Name", validators=[DataRequired(), Length(1,100)])
-    description = StringField("Description", validators=[DataRequired(), Length(1,100)])
+    description = StringField("Description", validators=[DataRequired(), Length(1,300)])
     commander = StringField("Commander", validators=[DataRequired(), Length(1,100)])
     cover_image_url = FileField("Cover Image Url")
     card_image_url = FileField("Card Image Url")

@@ -9,6 +9,7 @@ import fetchAll from "../utils";
 import { ThunkAddCardToDBAndDeck } from "../../store/cards";
 import { ThunkAddCardToDeck } from "../../store/cards";
 import { ThunkRemoveCard } from "../../store/cards";
+import { ThunkAddCommentToDeck } from "../../store/comments";
 import OpenModalButton from "../OpenModalButton/index";
 import UpdateDeckModal from "../UpdateDeckModal";
 import DeleteDeckModal from "../DeleteDeckModal";
@@ -22,6 +23,7 @@ export default function DeckDetails() {
   const comments = useSelector((state) => state.comments);
 
   const [addCard, setAddCard] = useState("");
+  const [addComment, setAddComment] = useState("");
   const [errors, setErrors] = useState({});
 
   const dispatch = useDispatch();
@@ -87,6 +89,20 @@ export default function DeckDetails() {
     }
   };
 
+  const handleCommentSubmit = async (e) => {
+    e.preventDefault();
+    let formData = new FormData();
+    formData.append("deck_id", currentDeck.id);
+    formData.append("user_id", user.id);
+    formData.append("message", addComment);
+    let data = await dispatch(ThunkAddCommentToDeck(formData));
+    if (data?.errors) {
+      setErrors(data.errors);
+    } else {
+      setAddComment("");
+    }
+  };
+
   const handleCardDelete = async (id) => {
     let data = await dispatch(ThunkRemoveCard(id, currentDeck.id));
     if (data.errors) {
@@ -103,13 +119,19 @@ export default function DeckDetails() {
     }
   }
   cardDisplay = cardsInDeckArray.map((card) => {
+    let deleteCardButton = null;
+    if (user.id === currentDeck.userId) {
+      deleteCardButton = (
+        <button onClick={(e) => handleCardDelete(card?.id)}>
+          Remove card from deck
+        </button>
+      );
+    }
     if (card?.id !== currentDeck.commanderId) {
       return (
         <div>
           <img src={card?.imageUrl} alt={`Cover for ${card?.name}`} />
-          <button onClick={(e) => handleCardDelete(card?.id)}>
-            Remove card from deck
-          </button>
+          {deleteCardButton}
         </div>
       );
     } else {
@@ -161,11 +183,26 @@ export default function DeckDetails() {
   commentDisplay = commentsAboutDeckArray.map((comment) => {
     return (
       <div>
-        <p>{comment.username}</p>
-        <p>{comment.message}</p>
+        <p>{comment?.username}</p>
+        <p>{comment?.message}</p>
       </div>
     );
   });
+
+  const addCommentDisplay = (
+    <form onSubmit={handleCommentSubmit}>
+      <label>
+        Add a comment!
+        <input
+          type="text"
+          value={addComment}
+          onChange={(e) => setAddComment(e.target.value)}
+        />
+      </label>
+      {errors.addComment && <p>{errors.addComment}</p>}
+      <button type="submit">Add comment</button>
+    </form>
+  );
 
   return (
     <div>
@@ -174,6 +211,7 @@ export default function DeckDetails() {
       {deckOptions}
       {cardDisplay}
       {commentDisplay}
+      {addCommentDisplay}
     </div>
   );
 }
