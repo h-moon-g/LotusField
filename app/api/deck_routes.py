@@ -118,7 +118,7 @@ def create_new_deck():
 @login_required
 def update_deck_not_local():
     """
-    Creates new deck. Returns deck dictionary.
+    Updates deck and add new card.
     """
     form = UpdateDeckFormNotLocal()
 
@@ -164,4 +164,76 @@ def update_deck_not_local():
             db.session.commit()
 
             return {"deck": deck_to_update.to_dict(), "card": new_card.to_dict()}
+    return { 'errors': validation_errors_to_error_messages(form.errors) }, 400
+
+
+@deck_routes.route('/update/local/nocover', methods=['PUT'])
+@login_required
+def update_deck_no_cover():
+    """
+    Updates deck and add new card.
+    """
+    form = UpdateDeckFormNoCover()
+
+    form['csrf_token'].data = request.cookies['csrf_token']
+
+    if form.validate_on_submit():
+            deck_image = form.data['cover_image_url']
+            deck_image.filename = get_unique_filename(deck_image.filename)
+
+            deck_upload = upload_file_to_s3(deck_image)
+            if "url" not in deck_upload:
+                return { 'errors': {'message': 'Oops! something went wrong on our end '}}, 500
+            deck_url = deck_upload['url']
+
+            deck_to_update = Deck.query.get(form.data['deck_id'])
+            new_commander = MagicCard.query.get(form.data['card_id'])
+
+            deck_to_update.commander_id = new_commander.id
+            deck_to_update.name = form.data['name']
+            deck_to_update.description = form.data['description']
+            deck_to_update.cover_image_url = deck_url
+
+            db.session.commit()
+
+            if form.data['card_in_deck'] == "yup":
+                 return {"deck": deck_to_update.to_dict(), "card_in_deck": form.data['card_in_deck']}
+            else:
+                deck_to_update.cards_in_deck.append(new_commander)
+                new_commander.decks_with_card.append(deck_to_update)
+                db.session.commit()
+
+                return {"deck": deck_to_update.to_dict(), "card": new_commander.to_dict(), "card_in_deck": form.data['card_in_deck']}
+    return { 'errors': validation_errors_to_error_messages(form.errors) }, 400
+
+
+@deck_routes.route('/update/local/hascover', methods=['PUT'])
+@login_required
+def update_deck_has_cover():
+    """
+    Updates deck and add new card.
+    """
+    form = UpdateDeckFormHasCover()
+
+    form['csrf_token'].data = request.cookies['csrf_token']
+
+    if form.validate_on_submit():
+            deck_to_update = Deck.query.get(form.data['deck_id'])
+            new_commander = MagicCard.query.get(form.data['card_id'])
+
+            deck_to_update.commander_id = new_commander.id
+            deck_to_update.name = form.data['name']
+            deck_to_update.description = form.data['description']
+            deck_to_update.cover_image_url = form.data['local_cover_image_url']
+
+            db.session.commit()
+
+            if form.data['card_in_deck'] == "yup":
+                 return {"deck": deck_to_update.to_dict(), "card_in_deck": form.data['card_in_deck']}
+            else:
+                deck_to_update.cards_in_deck.append(new_commander)
+                new_commander.decks_with_card.append(deck_to_update)
+                db.session.commit()
+
+                return {"deck": deck_to_update.to_dict(), "card": new_commander.to_dict(), "card_in_deck": form.data['card_in_deck']}
     return { 'errors': validation_errors_to_error_messages(form.errors) }, 400
