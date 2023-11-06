@@ -8,6 +8,8 @@ import { getAllComments } from "../../store/comments";
 import fetchAll from "../utils";
 import { ThunkAddCardToDBAndDeck } from "../../store/cards";
 import { ThunkAddCardToDeck } from "../../store/cards";
+import OpenModalButton from "../OpenModalButton/index";
+import UpdateDeckModal from "../UpdateDeckModal";
 
 export default function DeckDetails() {
   const { id } = useParams();
@@ -119,7 +121,10 @@ export default function DeckDetails() {
     deckOptions = (
       <div>
         <div>
-          <button>Update deck</button>
+          <OpenModalButton
+            buttonText="Update Deck"
+            modalComponent={<UpdateDeckModal id={id} />}
+          />
           <button>Delete deck</button>
         </div>
         <form onSubmit={handleSubmit}>

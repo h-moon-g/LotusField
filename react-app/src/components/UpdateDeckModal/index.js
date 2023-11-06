@@ -1,22 +1,28 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { useModal } from "../../context/Modal";
-import "./CreateDeckModal.css";
-import { ThunkCreateDeck } from "../../store/decks";
+import "./UpdateDeckModal.css";
+import { ThunkUpdateDeckHasCover } from "../../store/decks";
+import { ThunkUpdateDeckNoCover } from "../../store/decks";
+import { ThunkUpdateDeckNotLocal } from "../../store/decks";
 
-export default function CreateDeck() {
+export default function UpdateDeck(id) {
   const dispatch = useDispatch();
   const history = useHistory();
   const { closeModal } = useModal();
 
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [commander, setCommander] = useState("");
-  const [errors, setErrors] = useState({});
-
   const cards = useSelector((state) => state.cards);
   const decks = useSelector((state) => state.decks);
+
+  const currentDeck = useSelector((state) => state.decks[id.id]);
+
+  const [name, setName] = useState(currentDeck.name);
+  const [description, setDescription] = useState(currentDeck.description);
+  const [commander, setCommander] = useState(
+    cards[currentDeck.commanderId].name
+  );
+  const [errors, setErrors] = useState({});
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -35,10 +41,18 @@ export default function CreateDeck() {
       setErrors({ commander: "Invalid cardname!" });
       return null;
     } else {
+      formData.append("name", name);
+      formData.append("description", description);
+      formData.append("commander", commander);
+      formData.append("deck_id", currentDeck.id);
       const cardInLocalDB = Object.values(cards).find(
         (card) => card.name === apiCard.name
       );
       if (cardInLocalDB) {
+        formData.append("card_id", cardInLocalDB.id);
+        const cardInCurrentDeck = Object.values(currentDeck.cardsInDeck).find(
+          (id) => id === cardInLocalDB.id
+        );
         const deckWithCardAsCommander = Object.values(decks).find(
           (deck) => deck.commanderId === cardInLocalDB.id
         );
@@ -47,25 +61,38 @@ export default function CreateDeck() {
             "local_cover_image_url",
             deckWithCardAsCommander.coverImageUrl
           );
-          formData.append("local_card_id", cardInLocalDB.id);
-          formData.append("local_card", "yup");
-        } else {
-          if (cardInLocalDB?.type.slice(0, 18) === "Legendary Creature") {
-            const coverImage = apiCard.image_uris.art_crop;
-            let coverFile = null;
-            await fetch(`${coverImage}`)
-              .then((res) => res.blob())
-              .then((myBlob) => {
-                coverFile = new File([myBlob], "cover_image.jpeg", {
-                  type: myBlob.type,
-                });
-              });
-            formData.append("cover_image_url", coverFile);
-            formData.append("local_card_id", cardInLocalDB.id);
-            formData.append("local_card", "yup but no cover");
+          if (cardInCurrentDeck) {
+            formData.append("card_in_deck", "yup");
           } else {
-            setErrors({ commander: "Commanders must be legendary creatures!" });
-            return null;
+            formData.append("card_in_deck", "nope");
+          }
+          let data = await dispatch(ThunkUpdateDeckHasCover(formData));
+          if (data?.name) {
+            closeModal();
+          } else if (data?.errors) {
+            setErrors(data.errors);
+          }
+        } else {
+          const coverImage = apiCard.image_uris.art_crop;
+          let coverFile = null;
+          await fetch(`${coverImage}`)
+            .then((res) => res.blob())
+            .then((myBlob) => {
+              coverFile = new File([myBlob], "cover_image.jpeg", {
+                type: myBlob.type,
+              });
+            });
+          formData.append("cover_image_url", coverFile);
+          if (cardInCurrentDeck) {
+            formData.append("card_in_deck", "yup");
+          } else {
+            formData.append("card_in_deck", "nope");
+          }
+          let data = await dispatch(ThunkUpdateDeckNoCover(formData));
+          if (data?.name) {
+            closeModal();
+          } else if (data?.errors) {
+            setErrors(data.errors);
           }
         }
       } else {
@@ -92,28 +119,20 @@ export default function CreateDeck() {
         formData.append("color_identity", apiCard.color_identity.join(""));
         formData.append("card_name", apiCard.name);
         formData.append("type", apiCard.type_line);
-        formData.append("local_card", "nope");
+        let data = await dispatch(ThunkUpdateDeckNotLocal(formData));
+        if (data?.name) {
+          closeModal();
+        } else if (data?.errors) {
+          setErrors(data.errors);
+        }
       }
-    }
-
-    formData.append("name", name);
-    formData.append("description", description);
-    formData.append("commander", commander);
-
-    let data = await dispatch(ThunkCreateDeck(formData));
-
-    if (data?.name) {
-      history.push(`/decks/${data.id}`);
-      closeModal();
-    } else if (data?.errors) {
-      setErrors(data.errors);
     }
   };
 
   return (
     <div>
       <div>
-        <div>Create Deck</div>
+        <div>Update Deck</div>
         {errors.message && <p>{errors.message}</p>}
         <form onSubmit={handleSubmit}>
           <label>
@@ -146,7 +165,7 @@ export default function CreateDeck() {
             />
           </label>
           {errors.commander && <p>{errors.commander}</p>}
-          <button type="submit">Create Deck</button>
+          <button type="submit">Update Deck</button>
         </form>
       </div>
     </div>
