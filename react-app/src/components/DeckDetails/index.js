@@ -82,6 +82,7 @@ export default function DeckDetails() {
         if (data?.errors) {
           setErrors(data.errors);
         } else {
+          setErrors({});
           setAddCard("");
         }
       }
@@ -101,6 +102,7 @@ export default function DeckDetails() {
     if (data?.errors) {
       setErrors(data.errors);
     } else {
+      setErrors({});
       setAddComment("");
     }
   };
@@ -229,7 +231,7 @@ export default function DeckDetails() {
             onChange={(e) => setAddComment(e.target.value)}
           />
         </label>
-        {errors.addComment && <p>{errors.addComment}</p>}
+        {errors.message && <p>{errors.message}</p>}
         <button type="submit">Add comment</button>
       </form>
     );

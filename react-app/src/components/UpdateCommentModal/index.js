@@ -29,7 +29,6 @@ export default function UpdateComment(message, commentId) {
     <div>
       <div>
         <div>Update Comment</div>
-        {errors.message && <p>{errors.message}</p>}
         <form onSubmit={handleSubmit}>
           <label>
             Update your message!
