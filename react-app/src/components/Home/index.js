@@ -25,11 +25,15 @@ export default function Home() {
 
   const deckDisplay = decksArray.map((deck) => {
     return (
-      <NavLink key={deck.id} exact to={`decks/${deck.id}`}>
-        <div>
-          <img src={deck.coverImageUrl} />
-        </div>
-      </NavLink>
+      <div>
+        <p>{deck.username}</p>
+        <p>{deck.name}</p>
+        <NavLink key={deck.id} exact to={`decks/${deck.id}`}>
+          <div>
+            <img src={deck.coverImageUrl} />
+          </div>
+        </NavLink>
+      </div>
     );
   });
 

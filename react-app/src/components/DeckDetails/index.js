@@ -9,9 +9,12 @@ import fetchAll from "../utils";
 import { ThunkAddCardToDBAndDeck } from "../../store/cards";
 import { ThunkAddCardToDeck } from "../../store/cards";
 import { ThunkRemoveCard } from "../../store/cards";
+import { ThunkAddCommentToDeck } from "../../store/comments";
 import OpenModalButton from "../OpenModalButton/index";
 import UpdateDeckModal from "../UpdateDeckModal";
 import DeleteDeckModal from "../DeleteDeckModal";
+import DeleteCommentModal from "../DeleteCommentModal";
+import UpdateCommentModal from "../UpdateCommentModal";
 
 export default function DeckDetails() {
   const { id } = useParams();
@@ -19,8 +22,10 @@ export default function DeckDetails() {
   const user = useSelector((state) => state.session.user);
   const decks = useSelector((state) => state.decks);
   const cards = useSelector((state) => state.cards);
+  const comments = useSelector((state) => state.comments);
 
   const [addCard, setAddCard] = useState("");
+  const [addComment, setAddComment] = useState("");
   const [errors, setErrors] = useState({});
 
   const dispatch = useDispatch();
@@ -86,6 +91,20 @@ export default function DeckDetails() {
     }
   };
 
+  const handleCommentSubmit = async (e) => {
+    e.preventDefault();
+    let formData = new FormData();
+    formData.append("deck_id", currentDeck.id);
+    formData.append("user_id", user.id);
+    formData.append("message", addComment);
+    let data = await dispatch(ThunkAddCommentToDeck(formData));
+    if (data?.errors) {
+      setErrors(data.errors);
+    } else {
+      setAddComment("");
+    }
+  };
+
   const handleCardDelete = async (id) => {
     let data = await dispatch(ThunkRemoveCard(id, currentDeck.id));
     if (data.errors) {
@@ -102,13 +121,19 @@ export default function DeckDetails() {
     }
   }
   cardDisplay = cardsInDeckArray.map((card) => {
+    let deleteCardButton = null;
+    if (user?.id === currentDeck.userId) {
+      deleteCardButton = (
+        <button onClick={(e) => handleCardDelete(card?.id)}>
+          Remove card from deck
+        </button>
+      );
+    }
     if (card?.id !== currentDeck.commanderId) {
       return (
         <div>
           <img src={card?.imageUrl} alt={`Cover for ${card?.name}`} />
-          <button onClick={(e) => handleCardDelete(card?.id)}>
-            Remove card from deck
-          </button>
+          {deleteCardButton}
         </div>
       );
     } else {
@@ -150,12 +175,74 @@ export default function DeckDetails() {
     );
   }
 
+  let commentDisplay = null;
+  const commentsAboutDeckArray = [];
+  if (currentDeck) {
+    for (let commentId of currentDeck.commentsAboutDeck) {
+      commentsAboutDeckArray.push(comments[commentId]);
+    }
+  }
+  commentDisplay = commentsAboutDeckArray.map((comment) => {
+    let commentOptions = null;
+    if (user?.id === comment?.userId) {
+      commentOptions = (
+        <div>
+          <OpenModalButton
+            buttonText="Update Comment"
+            modalComponent={
+              <UpdateCommentModal
+                message={comment?.message}
+                commentId={comment?.id}
+              />
+            }
+          />
+          <OpenModalButton
+            buttonText="Delete Comment"
+            modalComponent={
+              <DeleteCommentModal
+                commentId={comment?.id}
+                deckId={currentDeck.id}
+              />
+            }
+          />
+        </div>
+      );
+    }
+    return (
+      <div>
+        <p>{comment?.username}</p>
+        <p>{comment?.message}</p>
+        {commentOptions}
+      </div>
+    );
+  });
+
+  let addCommentDisplay = null;
+  if (user?.id) {
+    addCommentDisplay = (
+      <form onSubmit={handleCommentSubmit}>
+        <label>
+          Add a comment!
+          <input
+            type="text"
+            value={addComment}
+            onChange={(e) => setAddComment(e.target.value)}
+          />
+        </label>
+        {errors.addComment && <p>{errors.addComment}</p>}
+        <button type="submit">Add comment</button>
+      </form>
+    );
+  }
+
   return (
     <div>
       <h1>{currentDeck?.name}</h1>
       <p>{currentDeck?.description}</p>
       {deckOptions}
       {cardDisplay}
+      {commentDisplay}
+      {addCommentDisplay}
     </div>
   );
 }
