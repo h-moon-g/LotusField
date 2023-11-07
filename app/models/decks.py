@@ -1,5 +1,6 @@
 from .db import db, environment, SCHEMA, add_prefix_for_prod
 from .associations import deck_cards
+from app.models import User
 
 class Deck(db.Model):
     __tablename__= 'decks'
@@ -20,12 +21,14 @@ class Deck(db.Model):
     cards_in_deck = db.relationship('MagicCard', secondary=deck_cards, back_populates='decks_with_card')
 
     def to_dict(self):
+        user = User.query.get(self.user_id)
         return {
             "id": self.id,
             "name": self.name,
             "description": self.description,
             "coverImageUrl": self.cover_image_url,
             "userId": self.user_id,
+            "username": user.username,
             "commanderId": self.commander_id,
             "cardsInDeck": [card.id for card in self.cards_in_deck],
             "commentsAboutDeck": [comment.id for comment in self.comments_about_deck]
