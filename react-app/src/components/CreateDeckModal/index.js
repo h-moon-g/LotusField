@@ -106,7 +106,7 @@ export default function CreateDeck() {
       history.push(`/decks/${data.id}`);
       closeModal();
     } else if (data?.errors) {
-      setErrors(data.errors);
+      setErrors(data?.errors);
     }
   };
 
