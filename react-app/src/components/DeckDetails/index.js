@@ -138,12 +138,6 @@ export default function DeckDetails() {
           {deleteCardButton}
         </div>
       );
-    } else {
-      return (
-        <div>
-          <img src={card?.imageUrl} alt={`Cover for ${card?.name}`} />
-        </div>
-      );
     }
   });
 
@@ -237,11 +231,22 @@ export default function DeckDetails() {
     );
   }
 
+  const commanderCard = cards[currentDeck.commanderId];
+  const commanderDisplay = (
+    <div>
+      <img
+        src={commanderCard?.imageUrl}
+        alt={`Cover for ${commanderCard?.name}`}
+      />
+    </div>
+  );
+
   return (
     <div>
       <h1>{currentDeck?.name}</h1>
       <p>{currentDeck?.description}</p>
       {deckOptions}
+      {commanderDisplay}
       {cardDisplay}
       {commentDisplay}
       {addCommentDisplay}
