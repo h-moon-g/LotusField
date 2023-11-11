@@ -231,7 +231,7 @@ export default function DeckDetails() {
     );
   }
 
-  const commanderCard = cards[currentDeck.commanderId];
+  const commanderCard = cards[currentDeck?.commanderId];
   const commanderDisplay = (
     <div>
       <img
