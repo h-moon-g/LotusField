@@ -50,6 +50,9 @@ export default function Home() {
         <h1>Ready. Set. Brew.</h1>
         <h2>We are a deck building website for Magic: the Gathering.</h2>
       </div>
+      <div id="home-map-text">
+        <h3>Explore all decks</h3>
+      </div>
       <div id="home-map-wrap">{deckDisplay}</div>
     </div>
   );

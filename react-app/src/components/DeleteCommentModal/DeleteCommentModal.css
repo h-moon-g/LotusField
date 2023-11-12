@@ -1,0 +1,44 @@
+.dm-delete-button {
+  width: 60%;
+  margin-bottom: 21.44px;
+  padding: 10px 0;
+  background-color: #c999e6;
+  color: white;
+}
+
+.dm-delete-button:hover {
+  cursor: pointer;
+  color: black;
+}
+
+.dm-close-delete-button:hover {
+  cursor: pointer;
+  color: black;
+}
+
+.dm-close-delete-button {
+  width: 60%;
+  margin-bottom: 0;
+  padding: 10px 0;
+  color: white;
+  background-color: lightgrey;
+}
+
+.dm-confirm-txt {
+  margin: 0;
+  margin-bottom: 21.44px;
+  color: white;
+}
+
+.dm-title-txt {
+  color: white;
+  font-size: 20px;
+}
+
+.modal-div {
+  margin: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
