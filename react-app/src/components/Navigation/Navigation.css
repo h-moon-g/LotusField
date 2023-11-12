@@ -15,15 +15,16 @@ body {
   align-items: center;
   height: 60px;
   background-color: #222;
-  border-bottom: 1px solid black;
+  border-bottom: 3px solid black;
 }
 
 #nav-buttons {
   display: flex;
   align-items: right;
   justify-content: right;
-  margin-left: 65%;
+  margin-left: 60%;
   width: 100%;
+  margin-right: 20px;
 }
 
 #nav-buttons > button {
@@ -39,10 +40,11 @@ body {
 
 #nav-buttons > button:hover {
   color: #c999e6;
+  cursor: pointer;
 }
 
 #nav-home-logo {
-  margin-left: 20px;
+  margin-left: 40px;
   text-decoration: none;
   color: white;
   font-size: 35px;
