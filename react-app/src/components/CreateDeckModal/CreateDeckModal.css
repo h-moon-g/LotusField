@@ -1,0 +1,10 @@
+.deck-modal-title {
+  color: white;
+  margin: 0;
+}
+
+.button-div {
+  display: flex;
+  justify-content: center;
+  padding-top: 20px;
+}
