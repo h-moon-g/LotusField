@@ -3,24 +3,24 @@
   margin-bottom: 21.44px;
   padding: 10px 0;
   background-color: #c999e6;
-  color: white;
+  color: black;
 }
 
 .dm-delete-button:hover {
   cursor: pointer;
-  color: black;
+  color: white;
 }
 
 .dm-close-delete-button:hover {
   cursor: pointer;
-  color: black;
+  color: white;
 }
 
 .dm-close-delete-button {
   width: 60%;
   margin-bottom: 0;
   padding: 10px 0;
-  color: white;
+  color: black;
   background-color: lightgrey;
 }
 

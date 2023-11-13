@@ -25,7 +25,7 @@ function DeleteDeckModal({ id }) {
   return (
     <div className="modal-div">
       <div className="dm-title-txt">Confirm Delete</div>
-      {errors.error && <p>{errors.error}</p>}
+      {errors.error && <p className="error">{errors.error}</p>}
       <div className="dm-confirm-txt">
         Are you sure you want to remove this deck?
       </div>
