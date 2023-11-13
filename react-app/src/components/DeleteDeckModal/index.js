@@ -19,7 +19,6 @@ function DeleteDeckModal({ id }) {
     }
     closeModal();
     history.push(`/`);
-    alert("Deck succesfully deleted.");
   };
 
   return (

@@ -82,6 +82,9 @@ export default function DeckDetails() {
         if (data?.errors) {
           setErrors(data.errors);
         } else {
+          if (errors?.addCard) {
+            setErrors({});
+          }
           setErrors({});
           setAddCard("");
         }
@@ -126,16 +129,20 @@ export default function DeckDetails() {
     let deleteCardButton = null;
     if (user?.id === currentDeck.userId) {
       deleteCardButton = (
-        <button onClick={(e) => handleCardDelete(card?.id)}>
-          Remove card from deck
+        <button id="remove-card" onClick={(e) => handleCardDelete(card?.id)}>
+          Remove card
         </button>
       );
     }
     if (card?.id !== currentDeck.commanderId) {
       return (
-        <div>
-          <img src={card?.imageUrl} alt={`Cover for ${card?.name}`} />
-          {deleteCardButton}
+        <div className="map-card-div">
+          <img
+            className="map-card-img"
+            src={card?.imageUrl}
+            alt={`Cover for ${card?.name}`}
+          />
+          <div id="rm-card-div">{deleteCardButton}</div>
         </div>
       );
     }
@@ -236,8 +243,10 @@ export default function DeckDetails() {
 
   const commanderCard = cards[currentDeck?.commanderId];
   const commanderDisplay = (
-    <div>
+    <div className="map-card-div">
       <img
+        className="map-card-img"
+        id="commander-card-img"
         src={commanderCard?.imageUrl}
         alt={`Cover for ${commanderCard?.name}`}
       />
@@ -256,8 +265,13 @@ export default function DeckDetails() {
           <img src={currentDeck?.coverImageUrl} />
         </div>
       </div>
-      {commanderDisplay}
-      {cardDisplay}
+      <div className="home-map-text">
+        <h3>Cards in deck</h3>
+      </div>
+      <div id="dd-card-wrapper">
+        {commanderDisplay}
+        {cardDisplay}
+      </div>
       {commentDisplay}
       {addCommentDisplay}
     </div>
