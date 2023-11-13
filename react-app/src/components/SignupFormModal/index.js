@@ -56,11 +56,11 @@ function SignupFormModal() {
   };
 
   return (
-    <div className="signup-container">
-      <div className="new-h1">Sign up</div>
+    <div className="modal-div">
+      <h1 id="signup-title">Sign up</h1>
       <form onSubmit={handleSubmit} className="signup-form">
         {validationObject.email && (
-          <span className="signup-error">{validationObject.email}</span>
+          <span className="error">{validationObject.email}</span>
         )}
         <label className="login-label">
           Email
@@ -71,7 +71,7 @@ function SignupFormModal() {
           />
         </label>
         {validationObject.username && (
-          <span className="signup-error">{validationObject.username}</span>
+          <span className="error">{validationObject.username}</span>
         )}
         <label className="login-label">
           Username
@@ -82,7 +82,7 @@ function SignupFormModal() {
           />
         </label>
         {validationObject.password && (
-          <span className="signup-error">{validationObject.password}</span>
+          <span className="error">{validationObject.password}</span>
         )}
         <label className="login-label">
           Password
@@ -93,9 +93,7 @@ function SignupFormModal() {
           />
         </label>
         {validationObject.confirmPassword && (
-          <span className="signup-error">
-            {validationObject.confirmPassword}
-          </span>
+          <span className="error">{validationObject.confirmPassword}</span>
         )}
         <label className="login-label">
           Confirm Password
@@ -105,9 +103,11 @@ function SignupFormModal() {
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
         </label>
-        <button className="signup-button" type="submit">
-          Sign Up
-        </button>
+        <div id="signup-button-div">
+          <button className="signup-button" type="submit">
+            Sign Up
+          </button>
+        </div>
       </form>
     </div>
   );

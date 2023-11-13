@@ -130,44 +130,46 @@ export default function UpdateDeck(id) {
   };
 
   return (
-    <div>
-      <div>
-        <div>Update Deck</div>
-        {errors.message && <p>{errors.message}</p>}
-        <form onSubmit={handleSubmit}>
-          <label>
-            Name your deck!
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-            />
-          </label>
-          {errors.name && <p>{errors.name}</p>}
-          <label>
-            Give a short description about your deck!
-            <input
-              type="text"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              required
-            />
-          </label>
-          {errors.description && <p>{errors.description}</p>}
-          <label>
-            Choose your commander!
-            <input
-              type="text"
-              value={commander}
-              onChange={(e) => setCommander(e.target.value)}
-              required
-            />
-          </label>
-          {errors.commander && <p>{errors.commander}</p>}
-          <button type="submit">Update Deck</button>
-        </form>
-      </div>
+    <div className="modal-div">
+      <h1 className="deck-modal-title">Update Deck</h1>
+      {errors.message && <p className="error">{errors.message}</p>}
+      <form onSubmit={handleSubmit}>
+        <label className="login-label">
+          Name your deck!
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+          />
+        </label>
+        {errors.name && <p className="error">{errors.name}</p>}
+        <label className="login-label">
+          Give a short description about your deck!
+          <input
+            type="text"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            required
+          />
+        </label>
+        {errors.description && <p>{errors.description}</p>}
+        <label className="login-label">
+          Choose your commander!
+          <input
+            type="text"
+            value={commander}
+            onChange={(e) => setCommander(e.target.value)}
+            required
+          />
+        </label>
+        {errors.commander && <p className="error">{errors.commander}</p>}
+        <div className="button-div">
+          <button className="signup-button" type="submit">
+            Update Deck
+          </button>
+        </div>
+      </form>
     </div>
   );
 }

@@ -22,12 +22,18 @@ function DeleteDeckModal({ id }) {
   };
 
   return (
-    <div>
-      <div>Confirm Delete</div>
-      {errors.error && <p>{errors.error}</p>}
-      <div>Are you sure you want to remove this deck?</div>
-      <button onClick={handleDelete}>YES (delete deck)</button>
-      <button onClick={closeModal}>NO (keep deck)</button>
+    <div className="modal-div">
+      <div className="dm-title-txt">Confirm Delete</div>
+      {errors.error && <p className="error">{errors.error}</p>}
+      <div className="dm-confirm-txt">
+        Are you sure you want to remove this deck?
+      </div>
+      <button className="dm-delete-button" onClick={handleDelete}>
+        YES (delete deck)
+      </button>
+      <button className="dm-close-delete-button" onClick={closeModal}>
+        NO (keep deck)
+      </button>
     </div>
   );
 }

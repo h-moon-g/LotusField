@@ -10,23 +10,22 @@ function Navigation({ isLoaded }) {
   const sessionUser = useSelector((state) => state.session.user);
 
   return (
-    <div>
-      <div>
-        <NavLink exact to="/">
-          Home
+    <div id="nav-div">
+      <div id="nav-logo-div">
+        <NavLink id="nav-home-logo" exact to="/">
+          Lotusfield
         </NavLink>
       </div>
-      {sessionUser ? (
-        <OpenModalButton
-          buttonText="Create Deck"
-          modalComponent={<CreateDeckModal />}
-        />
-      ) : null}
-      {isLoaded && (
-        <div>
-          <ProfileButton user={sessionUser} />
-        </div>
-      )}
+      <div id="nav-buttons">
+        {sessionUser ? (
+          <OpenModalButton
+            buttonText="Create Deck"
+            id="nav-create"
+            modalComponent={<CreateDeckModal />}
+          />
+        ) : null}
+        {isLoaded && <ProfileButton id="nav-profile" user={sessionUser} />}
+      </div>
     </div>
   );
 }

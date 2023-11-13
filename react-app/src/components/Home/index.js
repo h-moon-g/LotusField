@@ -25,11 +25,18 @@ export default function Home() {
 
   const deckDisplay = decksArray.map((deck) => {
     return (
-      <div>
-        <p>{deck.username}</p>
-        <p>{deck.name}</p>
-        <NavLink key={deck.id} exact to={`decks/${deck.id}`}>
-          <div>
+      <div id="home-deck-div">
+        <NavLink
+          id="home-deck-card"
+          key={deck.id}
+          exact
+          to={`decks/${deck.id}`}
+        >
+          <div id="home-deck-text">
+            <p>{deck.username}</p>
+            <p>{deck.name}</p>
+          </div>
+          <div id="home-img-div">
             <img src={deck.coverImageUrl} />
           </div>
         </NavLink>
@@ -37,5 +44,16 @@ export default function Home() {
     );
   });
 
-  return <div>{deckDisplay}</div>;
+  return (
+    <div>
+      <div id="home-text">
+        <h1>Ready. Set. Brew.</h1>
+        <h2>We are a deck building website for Magic: the Gathering.</h2>
+      </div>
+      <div className="home-map-text">
+        <h3>Explore all decks</h3>
+      </div>
+      <div id="home-map-wrap">{deckDisplay}</div>
+    </div>
+  );
 }

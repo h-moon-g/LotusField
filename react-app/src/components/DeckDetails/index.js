@@ -82,6 +82,9 @@ export default function DeckDetails() {
         if (data?.errors) {
           setErrors(data.errors);
         } else {
+          if (errors?.addCard) {
+            setErrors({});
+          }
           setErrors({});
           setAddCard("");
         }
@@ -126,22 +129,20 @@ export default function DeckDetails() {
     let deleteCardButton = null;
     if (user?.id === currentDeck.userId) {
       deleteCardButton = (
-        <button onClick={(e) => handleCardDelete(card?.id)}>
-          Remove card from deck
+        <button id="remove-card" onClick={(e) => handleCardDelete(card?.id)}>
+          Remove card
         </button>
       );
     }
     if (card?.id !== currentDeck.commanderId) {
       return (
-        <div>
-          <img src={card?.imageUrl} alt={`Cover for ${card?.name}`} />
-          {deleteCardButton}
-        </div>
-      );
-    } else {
-      return (
-        <div>
-          <img src={card?.imageUrl} alt={`Cover for ${card?.name}`} />
+        <div className="map-card-div">
+          <img
+            className="map-card-img"
+            src={card?.imageUrl}
+            alt={`Cover for ${card?.name}`}
+          />
+          <div id="rm-card-div">{deleteCardButton}</div>
         </div>
       );
     }
@@ -162,7 +163,7 @@ export default function DeckDetails() {
           />
         </div>
         <form onSubmit={handleSubmit}>
-          <label>
+          <label className="login-label">
             Add a card!
             <input
               type="text"
@@ -170,8 +171,11 @@ export default function DeckDetails() {
               onChange={(e) => setAddCard(e.target.value)}
             />
           </label>
-          {errors.addCard && <p>{errors.addCard}</p>}
-          <button type="submit">Add card</button>
+          {errors.addCard && <p id="dd-bar-error">{errors.addCard}</p>}
+          <p className="filler">llll</p>
+          <button type="submit" className="signup-button">
+            Add card
+          </button>
         </form>
       </div>
     );
@@ -211,9 +215,9 @@ export default function DeckDetails() {
       );
     }
     return (
-      <div>
-        <p>{comment?.username}</p>
-        <p>{comment?.message}</p>
+      <div id="dd-comment-div">
+        <p id="dd-comment-user">{comment?.username}</p>
+        <p id="dd-comment-msg">{comment?.message}</p>
         {commentOptions}
       </div>
     );
@@ -223,7 +227,7 @@ export default function DeckDetails() {
   if (user?.id) {
     addCommentDisplay = (
       <form onSubmit={handleCommentSubmit}>
-        <label>
+        <label className="login-label">
           Add a comment!
           <input
             type="text"
@@ -231,20 +235,53 @@ export default function DeckDetails() {
             onChange={(e) => setAddComment(e.target.value)}
           />
         </label>
-        {errors.message && <p>{errors.message}</p>}
-        <button type="submit">Add comment</button>
+        {errors.message && <p id="dd-comment-error">{errors.message}</p>}
+        <p className="filler">llll</p>
+        <button type="submit" className="signup-button">
+          Add comment
+        </button>
       </form>
     );
   }
 
+  const commanderCard = cards[currentDeck?.commanderId];
+  const commanderDisplay = (
+    <div className="map-card-div">
+      <img
+        className="map-card-img"
+        id="commander-card-img"
+        src={commanderCard?.imageUrl}
+        alt={`Cover for ${commanderCard?.name}`}
+      />
+    </div>
+  );
+
   return (
     <div>
-      <h1>{currentDeck?.name}</h1>
-      <p>{currentDeck?.description}</p>
-      {deckOptions}
-      {cardDisplay}
-      {commentDisplay}
-      {addCommentDisplay}
+      <div id="dd-top-bar">
+        <div id="dd-deck-info">
+          <h1>{currentDeck?.name}</h1>
+          <p>{currentDeck?.description}</p>
+          {deckOptions}
+        </div>
+        <div id="dd-deck-img">
+          <img src={currentDeck?.coverImageUrl} />
+        </div>
+      </div>
+      <div className="home-map-text">
+        <h3>Cards in deck</h3>
+      </div>
+      <div id="dd-card-wrapper">
+        {commanderDisplay}
+        {cardDisplay}
+      </div>
+      <div id="dd-comment-header">
+        <h3>Comments about deck</h3>
+      </div>
+      <div id="dd-comment-wrapper">
+        {commentDisplay}
+        {addCommentDisplay}
+      </div>
     </div>
   );
 }
