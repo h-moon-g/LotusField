@@ -26,23 +26,25 @@ export default function UpdateComment(message, commentId) {
   };
 
   return (
-    <div>
-      <div>
-        <div>Update Comment</div>
-        <form onSubmit={handleSubmit}>
-          <label>
-            Update your message!
-            <input
-              type="text"
-              value={updateMessage}
-              onChange={(e) => setUpdateMessage(e.target.value)}
-              required
-            />
-          </label>
-          {errors.message && <p>{errors.message}</p>}
-          <button type="submit">Update Comment</button>
-        </form>
-      </div>
+    <div className="modal-div">
+      <h1 className="deck-modal-title">Update Comment</h1>
+      <form onSubmit={handleSubmit}>
+        <label className="login-label">
+          Update your message!
+          <input
+            type="text"
+            value={updateMessage}
+            onChange={(e) => setUpdateMessage(e.target.value)}
+            required
+          />
+        </label>
+        {errors.message && <p className="error">{errors.message}</p>}
+        <div className="button-div">
+          <button className="signup-button" type="submit">
+            Update Comment
+          </button>
+        </div>
+      </form>
     </div>
   );
 }

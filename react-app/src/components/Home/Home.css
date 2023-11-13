@@ -1,0 +1,97 @@
+#home-text {
+  background-image: url("https://lotusfieldbucket.s3.us-west-2.amazonaws.com/lotus-field.jpg");
+  color: white;
+  margin-top: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 3px solid black;
+}
+
+#home-text > h1 {
+  font-size: 60px;
+  font-weight: bolder;
+}
+
+#home-text > h2 {
+  font-size: 30px;
+  margin-top: 0;
+  margin-bottom: 50px;
+  font-weight: bolder;
+  text-align: center;
+}
+
+#home-img-div {
+  width: 300px;
+}
+
+#home-img-div > img {
+  width: 300px;
+  filter: brightness(50%);
+  position: relative;
+}
+
+#home-deck-card {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#home-deck-text > p {
+  display: flex;
+  justify-content: center;
+  color: white;
+  text-decoration: 0;
+  font-size: 20px;
+}
+
+body {
+  background-color: #222;
+}
+
+#home-deck-div {
+  width: 300px;
+  border: 3px solid black;
+  height: 219px;
+  margin: 20px;
+}
+
+#home-deck-div:hover {
+  border: 3px solid #c999e6;
+}
+
+#home-map-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 20px;
+  margin-top: 0;
+}
+
+#home-deck-text {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 200px;
+  text-align: center;
+  z-index: 1;
+}
+
+#home-deck-text > p {
+  margin-bottom: 10px;
+  margin-top: 0;
+}
+.home-map-text {
+  color: #666;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.home-map-text > h3 {
+  margin-bottom: 0;
+}

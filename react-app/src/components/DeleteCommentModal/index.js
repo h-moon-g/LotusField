@@ -19,12 +19,18 @@ function DeleteCommentModal({ commentId, deckId }) {
   };
 
   return (
-    <div>
-      <div>Confirm Delete</div>
+    <div className="modal-div">
+      <div className="dm-title-txt">Confirm Delete</div>
       {errors.error && <p>{errors.error}</p>}
-      <div>Are you sure you want to remove this comment?</div>
-      <button onClick={handleDelete}>YES (delete comment)</button>
-      <button onClick={closeModal}>NO (keep comment)</button>
+      <div className="dm-confirm-txt">
+        Are you sure you want to remove this comment?
+      </div>
+      <button className="dm-delete-button" onClick={handleDelete}>
+        YES (delete comment)
+      </button>
+      <button className="dm-close-delete-button" onClick={closeModal}>
+        NO (keep comment)
+      </button>
     </div>
   );
 }

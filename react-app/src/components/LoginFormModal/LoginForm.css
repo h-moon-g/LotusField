@@ -1,0 +1,83 @@
+.error {
+  color: red;
+  list-style-type: none;
+  display: flex;
+  justify-content: center;
+  margin: 4px;
+}
+
+.errors-ul {
+  padding: 0;
+}
+
+#login-title {
+  display: flex;
+  justify-content: center;
+  color: white;
+  margin: 0;
+}
+
+#login-form {
+  display: flex;
+  flex-direction: column;
+}
+
+#login-button {
+  width: 60%;
+  margin-bottom: 21.44px;
+  padding: 10px 0;
+  background-color: #c999e6;
+  color: black;
+}
+
+#login-button:hover {
+  color: white;
+  cursor: pointer;
+}
+
+.demoUserLink:hover {
+  color: white;
+  cursor: pointer;
+}
+
+.demoUserLink {
+  width: 60%;
+  margin-bottom: 21.44px;
+  padding: 10px 0;
+  background-color: #c999e6;
+  color: black;
+}
+
+.modal-div {
+  width: 400px;
+  margin: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.label {
+  color: white;
+  display: flex;
+  flex-direction: column;
+}
+
+#login-button-div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}
+
+#login-button-div > button {
+  margin-bottom: 10px;
+}
+
+#email-label {
+  color: white;
+  padding-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  width: 250px;
+}
