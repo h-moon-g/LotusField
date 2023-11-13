@@ -156,7 +156,7 @@ export default function DeckDetails() {
           />
         </div>
         <form onSubmit={handleSubmit}>
-          <label>
+          <label className="login-label">
             Add a card!
             <input
               type="text"
@@ -164,8 +164,11 @@ export default function DeckDetails() {
               onChange={(e) => setAddCard(e.target.value)}
             />
           </label>
-          {errors.addCard && <p>{errors.addCard}</p>}
-          <button type="submit">Add card</button>
+          {errors.addCard && <p id="dd-bar-error">{errors.addCard}</p>}
+          <p className="filler">llll</p>
+          <button type="submit" className="signup-button">
+            Add card
+          </button>
         </form>
       </div>
     );
@@ -243,9 +246,16 @@ export default function DeckDetails() {
 
   return (
     <div>
-      <h1>{currentDeck?.name}</h1>
-      <p>{currentDeck?.description}</p>
-      {deckOptions}
+      <div id="dd-top-bar">
+        <div id="dd-deck-info">
+          <h1>{currentDeck?.name}</h1>
+          <p>{currentDeck?.description}</p>
+          {deckOptions}
+        </div>
+        <div id="dd-deck-img">
+          <img src={currentDeck?.coverImageUrl} />
+        </div>
+      </div>
       {commanderDisplay}
       {cardDisplay}
       {commentDisplay}

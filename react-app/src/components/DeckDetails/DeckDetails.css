@@ -1,0 +1,57 @@
+#dd-top-bar {
+  display: flex;
+  height: 300px;
+  width: 100%;
+}
+
+#dd-deck-img {
+  width: 100%;
+  display: flex;
+  justify-content: right;
+  align-items: right;
+  background-color: #333;
+}
+
+#dd-deck-img > img {
+  height: 300px;
+  justify-content: right;
+  align-items: right;
+}
+
+#dd-deck-info {
+  width: 100%;
+  background-color: #333;
+  padding-left: 40px;
+}
+
+#dd-deck-info > h1 {
+  color: white;
+}
+
+#dd-deck-info > p {
+  color: white;
+}
+
+.modal-button {
+  width: 120px;
+  padding: 10px 0;
+  background-color: #c999e6;
+  color: black;
+  margin-right: 10px;
+}
+
+.modal-button:hover {
+  cursor: pointer;
+  color: white;
+}
+
+#dd-bar-error {
+  color: red;
+  margin-bottom: 0;
+}
+
+.filler {
+  color: #333;
+  margin: 0;
+  padding: 0;
+}

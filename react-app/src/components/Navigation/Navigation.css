@@ -30,7 +30,7 @@ body {
 #nav-buttons > button {
   display: flex;
   align-items: right;
-  margin-right: 20px;
+  margin-right: 40px;
   background-color: #222;
   color: white;
   border: none;
@@ -113,6 +113,7 @@ body {
 .fas {
   font-size: 24px;
 }
+
 #nav-dropdown-2 {
   border: none;
   border-bottom: 1px solid white;
