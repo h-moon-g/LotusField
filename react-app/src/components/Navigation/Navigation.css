@@ -62,8 +62,8 @@ body {
 .profile-dropdown {
   position: absolute;
   z-index: 1;
-  margin-top: 30px;
-  margin-right: 20px;
+  margin-top: 40px;
+  margin-right: 40px;
   background-color: #444;
   color: white;
   border: none;

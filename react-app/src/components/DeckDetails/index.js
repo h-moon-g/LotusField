@@ -215,9 +215,9 @@ export default function DeckDetails() {
       );
     }
     return (
-      <div>
-        <p>{comment?.username}</p>
-        <p>{comment?.message}</p>
+      <div id="dd-comment-div">
+        <p id="dd-comment-user">{comment?.username}</p>
+        <p id="dd-comment-msg">{comment?.message}</p>
         {commentOptions}
       </div>
     );
@@ -227,7 +227,7 @@ export default function DeckDetails() {
   if (user?.id) {
     addCommentDisplay = (
       <form onSubmit={handleCommentSubmit}>
-        <label>
+        <label className="login-label">
           Add a comment!
           <input
             type="text"
@@ -235,8 +235,11 @@ export default function DeckDetails() {
             onChange={(e) => setAddComment(e.target.value)}
           />
         </label>
-        {errors.message && <p>{errors.message}</p>}
-        <button type="submit">Add comment</button>
+        {errors.message && <p id="dd-comment-error">{errors.message}</p>}
+        <p className="filler">llll</p>
+        <button type="submit" className="signup-button">
+          Add comment
+        </button>
       </form>
     );
   }
@@ -272,8 +275,13 @@ export default function DeckDetails() {
         {commanderDisplay}
         {cardDisplay}
       </div>
-      {commentDisplay}
-      {addCommentDisplay}
+      <div id="dd-comment-header">
+        <h3>Comments about deck</h3>
+      </div>
+      <div id="dd-comment-wrapper">
+        {commentDisplay}
+        {addCommentDisplay}
+      </div>
     </div>
   );
 }

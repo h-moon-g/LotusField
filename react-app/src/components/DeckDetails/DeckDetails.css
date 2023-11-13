@@ -99,3 +99,32 @@
 #commander-card-img {
   margin-bottom: 30px;
 }
+
+#dd-comment-wrapper {
+  background-color: #333;
+  padding-right: 40px;
+  padding-left: 40px;
+  padding-bottom: 40px;
+}
+
+#dd-comment-error {
+  color: red;
+}
+
+#dd-comment-div {
+  color: white;
+  border-bottom: 1px solid #444;
+  padding-bottom: 10px;
+}
+
+#dd-comment-user {
+  margin-top: 0;
+  padding-top: 10px;
+}
+
+#dd-comment-header {
+  display: flex;
+  justify-content: center;
+  color: #555;
+  background-color: #333;
+}
