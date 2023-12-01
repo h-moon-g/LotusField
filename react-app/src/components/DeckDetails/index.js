@@ -148,7 +148,9 @@ export default function DeckDetails() {
     }
   });
 
-  const randomButton = async () => {
+  const randomButton = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
     let apiFetch = await fetch(`https://api.scryfall.com/cards/random`);
     let apiCard = await apiFetch.json();
     if (apiCard?.name) {
@@ -178,12 +180,16 @@ export default function DeckDetails() {
               value={addCard}
               onChange={(e) => setAddCard(e.target.value)}
             />
-            <button onClick={randomButton} className="signup-button">
-              Random!
-            </button>
           </label>
           {errors.addCard && <p id="dd-bar-error">{errors.addCard}</p>}
           <p className="filler">llll</p>
+          <button
+            onClick={randomButton}
+            className="signup-button"
+            id="randomize"
+          >
+            Randomize
+          </button>
           <button type="submit" className="signup-button">
             Add card
           </button>
