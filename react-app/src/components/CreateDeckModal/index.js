@@ -111,6 +111,18 @@ export default function CreateDeck() {
     }
   };
 
+  const randomButton = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    let apiFetch = await fetch(
+      `https://api.scryfall.com/cards/random?q=is%3Acommander`
+    );
+    let apiCard = await apiFetch.json();
+    if (apiCard?.name) {
+      setCommander(apiCard.name);
+    }
+  };
+
   return (
     <div className="modal-div">
       <h1 className="deck-modal-title">Create Deck</h1>
@@ -147,6 +159,13 @@ export default function CreateDeck() {
         </label>
         {errors.commander && <p className="error">{errors.commander}</p>}
         <div className="button-div">
+          <button
+            onClick={randomButton}
+            className="signup-button"
+            id="randomize"
+          >
+            Randomize
+          </button>
           <button className="signup-button" type="submit">
             Create Deck
           </button>
