@@ -214,6 +214,7 @@ export default function DeckDetails() {
         //   onClick={(e) => {
         //     e.stopPropagation();
         //     handleCommentButtonClick()
+        //     setShowMenu(true);
         //   }}
         // >
         //   <i className="fas fa-ellipsis-h"></i>
