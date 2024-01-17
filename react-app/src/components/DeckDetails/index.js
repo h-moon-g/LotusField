@@ -209,6 +209,15 @@ export default function DeckDetails() {
     let commentOptions = null;
     if (user?.id === comment?.userId) {
       commentOptions = (
+        //   <button
+        //   className="comment-menu-button"
+        //   onClick={(e) => {
+        //     e.stopPropagation();
+        //     handleCommentButtonClick()
+        //   }}
+        // >
+        //   <i className="fas fa-ellipsis-h"></i>
+        // </button>
         <div>
           <OpenModalButton
             buttonText="Update Comment"
