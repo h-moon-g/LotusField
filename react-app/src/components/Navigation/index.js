@@ -18,11 +18,14 @@ function Navigation({ isLoaded }) {
       </div>
       <div id="nav-buttons">
         {sessionUser ? (
-          <OpenModalButton
-            buttonText="Create Deck"
-            id="nav-create"
-            modalComponent={<CreateDeckModal />}
-          />
+          <div>
+            <div></div>
+            <OpenModalButton
+              buttonText="Create Deck"
+              id="nav-create"
+              modalComponent={<CreateDeckModal />}
+            />
+          </div>
         ) : null}
         {isLoaded && <ProfileButton id="nav-profile" user={sessionUser} />}
       </div>

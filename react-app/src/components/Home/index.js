@@ -7,6 +7,20 @@ import { getAllCards } from "../../store/cards";
 import { getAllComments } from "../../store/comments";
 import fetchAll from "../utils";
 
+// Features Coming Soon...
+// More expansive search such as...
+// Autofilled results
+// Search by card color, type, cost and more
+// Better form and comment ui
+// Mobile view
+// Include card price with options to add to cart with option to buy singles or decks
+// Your decks section
+// Liked decks section
+// Select format to add decks from more than commander
+// More rules checking to check legality of decks
+// Show stats about decks such as average CMC, deck price, amount of lands. etc
+// ... and more!
+
 export default function Home() {
   const user = useSelector((state) => state.session.user);
   const decks = useSelector((state) => state.decks);
